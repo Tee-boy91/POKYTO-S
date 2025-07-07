@@ -1,0 +1,2227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pokyto's Restaurant - Fine Dining Experience</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>tailwind.config={theme:{extend:{colors:{primary:'#ff6b6b',secondary:'#4ecdc4'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/ScrollTrigger.min.js"></script>
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/dropdown.css">
+<style>
+:where([class^="ri-"])::before { content: "\f3c2"; }
+:root {
+--primary: #ff6b6b;
+--secondary: #4ecdc4;
+--dark: #2d3436;
+--light: #f9f9f9;
+--accent: #ffd166;
+}
+body {
+font-family: 'Poppins', sans-serif;
+overflow-x: hidden;
+background-color: #0f0f0f;
+color: #fff;
+}
+h1, h2, h3, h4, h5, h6 {
+font-family: 'Playfair Display', serif;
+}
+.logo {
+font-family: 'Pacifico', serif;
+}
+.gradient-text {
+background: linear-gradient(135deg, var(--primary), var(--secondary));
+-webkit-background-clip: text;
+background-clip: text;
+color: transparent;
+}
+.gradient-border {
+position: relative;
+border-radius: 8px;
+background: linear-gradient(#0f0f0f, #0f0f0f) padding-box,
+linear-gradient(135deg, var(--primary), var(--secondary)) border-box;
+border: 2px solid transparent;
+}
+.floating-card {
+transition: transform 0.5s ease, box-shadow 0.5s ease;
+transform: translateZ(0);
+will-change: transform;
+}
+.floating-card:hover {
+transform: translateY(-10px) scale(1.02);
+box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+}
+.glow-effect {
+position: relative;
+z-index: 1;
+}
+.glow-effect::after {
+content: '';
+position: absolute;
+top: -2px;
+left: -2px;
+right: -2px;
+bottom: -2px;
+background: linear-gradient(45deg, var(--primary), var(--secondary));
+z-index: -1;
+filter: blur(15px);
+opacity: 0;
+transition: opacity 0.3s ease;
+border-radius: inherit;
+}
+.glow-effect:hover::after {
+opacity: 0.7;
+}
+.menu-item {
+transition: all 0.4s ease;
+transform-style: preserve-3d;
+perspective: 1000px;
+}
+.menu-item:hover {
+transform: translateY(-5px) rotateX(5deg);
+}
+.menu-item img {
+transition: transform 0.5s ease;
+}
+.menu-item:hover img {
+transform: scale(1.05);
+}
+.parallax-bg {
+background-attachment: fixed;
+background-position: center;
+background-repeat: no-repeat;
+background-size: cover;
+}
+.custom-scrollbar::-webkit-scrollbar {
+width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+background: #1a1a1a;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+background: var(--primary);
+border-radius: 10px;
+}
+.nav-link {
+position: relative;
+transition: color 0.3s ease;
+}
+.nav-link::after {
+content: '';
+position: absolute;
+width: 0;
+height: 2px;
+bottom: -2px;
+left: 0;
+background: linear-gradient(to right, var(--primary), var(--secondary));
+transition: width 0.3s ease;
+}
+.nav-link:hover::after,
+.nav-link.active::after {
+width: 100%;
+}
+.pulse-icon {
+position: relative;
+}
+.pulse-icon::after {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+border-radius: 50%;
+background: rgba(255, 107, 107, 0.3);
+animation: pulse 2s infinite;
+z-index: -1;
+}
+@keyframes pulse {
+0% {
+transform: scale(1);
+opacity: 0.7;
+}
+70% {
+transform: scale(1.5);
+opacity: 0;
+}
+100% {
+transform: scale(1);
+opacity: 0;
+}
+}
+.hero-bg {
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-image: url('https://readdy.ai/api/search-image?query=luxurious%20restaurant%20interior%20with%20dark%20ambiance%2C%20soft%20golden%20lighting%2C%20elegant%20table%20settings%2C%20crystal%20chandeliers%2C%20and%20a%20sophisticated%20atmosphere.%20The%20left%20side%20is%20darker%20with%20subtle%20gradient%20to%20allow%20text%20overlay%20with%20high%20contrast&width=1920&height=1080&seq=hero1&orientation=landscape');
+background-size: cover;
+background-position: center;
+z-index: -1;
+}
+.hero-overlay {
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: linear-gradient(90deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0.5) 100%);
+z-index: -1;
+}
+.counter-value {
+font-family: 'Playfair Display', serif;
+font-weight: 700;
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+-webkit-appearance: none;
+margin: 0;
+}
+.custom-checkbox {
+position: relative;
+display: flex;
+align-items: center;
+cursor: pointer;
+}
+.custom-checkbox input {
+position: absolute;
+opacity: 0;
+cursor: pointer;
+height: 0;
+width: 0;
+}
+.checkmark {
+height: 20px;
+width: 20px;
+background-color: #2a2a2a;
+border-radius: 4px;
+display: flex;
+align-items: center;
+justify-content: center;
+transition: all 0.3s ease;
+}
+.custom-checkbox input:checked ~ .checkmark {
+background-color: var(--primary);
+}
+.checkmark:after {
+content: "";
+position: absolute;
+display: none;
+width: 5px;
+height: 10px;
+border: solid white;
+border-width: 0 2px 2px 0;
+transform: rotate(45deg);
+}
+.custom-checkbox input:checked ~ .checkmark:after {
+display: block;
+}
+.custom-radio {
+position: relative;
+display: flex;
+align-items: center;
+cursor: pointer;
+}
+.custom-radio input {
+position: absolute;
+opacity: 0;
+cursor: pointer;
+height: 0;
+width: 0;
+}
+.radio-mark {
+height: 20px;
+width: 20px;
+background-color: #2a2a2a;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+transition: all 0.3s ease;
+}
+.custom-radio input:checked ~ .radio-mark {
+background-color: #2a2a2a;
+border: 2px solid var(--primary);
+}
+.radio-mark:after {
+content: "";
+position: absolute;
+display: none;
+width: 10px;
+height: 10px;
+border-radius: 50%;
+background: var(--primary);
+}
+.custom-radio input:checked ~ .radio-mark:after {
+display: block;
+}
+.custom-switch {
+position: relative;
+display: inline-block;
+width: 50px;
+height: 24px;
+}
+.custom-switch input {
+opacity: 0;
+width: 0;
+height: 0;
+}
+.switch-slider {
+position: absolute;
+cursor: pointer;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background-color: #2a2a2a;
+transition: .4s;
+border-radius: 34px;
+}
+.switch-slider:before {
+position: absolute;
+content: "";
+height: 16px;
+width: 16px;
+left: 4px;
+bottom: 4px;
+background-color: white;
+transition: .4s;
+border-radius: 50%;
+}
+input:checked + .switch-slider {
+background-color: var(--primary);
+}
+input:checked + .switch-slider:before {
+transform: translateX(26px);
+}
+.tab-button {
+position: relative;
+transition: all 0.3s ease;
+}
+.tab-button.active {
+background: var(--primary);
+color: white;
+}
+.tab-button:not(.active) {
+color: #9CA3AF;
+}
+.tab-button:not(.active):hover {
+color: white;
+}
+.gallery-item {
+position: relative;
+overflow: hidden;
+border-radius: 8px;
+}
+.gallery-item img {
+transition: transform 0.5s ease;
+}
+.gallery-item:hover img {
+transform: scale(1.05);
+}
+.gallery-overlay {
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: rgba(0, 0, 0, 0.5);
+opacity: 0;
+transition: opacity 0.3s ease;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+.gallery-item:hover .gallery-overlay {
+opacity: 1;
+}
+.timeline-item {
+position: relative;
+padding-left: 30px;
+}
+.timeline-item::before {
+content: '';
+position: absolute;
+left: 0;
+top: 0;
+width: 2px;
+height: 100%;
+background: linear-gradient(to bottom, var(--primary), var(--secondary));
+}
+.timeline-item::after {
+content: '';
+position: absolute;
+left: -4px;
+top: 0;
+width: 10px;
+height: 10px;
+border-radius: 50%;
+background: var(--primary);
+}
+.quote {
+position: relative;
+font-style: italic;
+}
+.quote::before {
+content: '"';
+font-size: 4rem;
+position: absolute;
+top: -20px;
+left: -20px;
+color: rgba(255, 107, 107, 0.2);
+font-family: 'Playfair Display', serif;
+}
+.quote::after {
+content: '"';
+font-size: 4rem;
+position: absolute;
+bottom: -60px;
+right: -20px;
+color: rgba(255, 107, 107, 0.2);
+font-family: 'Playfair Display', serif;
+}
+</style>
+</head>
+<body class="custom-scrollbar">
+<header class="fixed top-0 left-0 w-full z-50 transition-all duration-300" id="header">
+<div class="container mx-auto px-4 py-4 flex items-center justify-between">
+<div class="flex items-center">
+<a href="#" class="logo text-3xl text-white font-bold">Pokyto's</a>
+</div>
+<nav class="hidden md:flex items-center space-x-8">
+<a href="#home" class="nav-link text-white hover:text-primary">Home</a>
+<a href="#about" class="nav-link text-white hover:text-primary">About</a>
+<div class="dropdown">
+<a href="#menu" class="nav-link text-white hover:text-primary">Menu</a>
+<div class="dropdown-menu">
+<a href="food-menu.html" class="dropdown-item">
+<i class="ri-restaurant-line mr-2"></i>Food Menu
+</a>
+<a href="drinks-menu.html" class="dropdown-item">
+<i class="ri-cup-line mr-2"></i>Drinks Menu
+</a>
+</div>
+</div>
+<a href="#contact" class="nav-link text-white hover:text-primary">Contact</a>
+</nav>
+<div class="flex items-center space-x-4">
+<button id="cart-button" class="relative text-white hover:text-primary transition-colors">
+<div class="w-10 h-10 flex items-center justify-center">
+<i class="ri-shopping-cart-2-line ri-lg"></i>
+</div>
+<span id="cart-count" class="absolute -top-1 -right-1 bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+</button>
+<button id="mobile-menu-button" class="md:hidden text-white hover:text-primary transition-colors">
+<div class="w-10 h-10 flex items-center justify-center">
+<i class="ri-menu-line ri-lg"></i>
+</div>
+</button>
+</div>
+</div>
+<div id="mobile-menu" class="md:hidden bg-black bg-opacity-95 absolute w-full left-0 top-full py-4 px-4 hidden z-40 backdrop-blur-sm border-t border-gray-800">
+<nav class="flex flex-col space-y-4">
+<a href="index.html#home" class="nav-link text-white hover:text-primary py-2">Home</a>
+<a href="index.html#about" class="nav-link text-white hover:text-primary py-2">About</a>
+<a href="food-menu.html" class="nav-link text-white hover:text-primary py-2">Food Menu</a>
+<a href="drinks-menu.html" class="nav-link text-white hover:text-primary py-2">Drinks Menu</a>
+<a href="index.html#contact" class="nav-link text-white hover:text-primary py-2">Contact</a>
+</nav>
+</div>
+</header>
+<!-- Cart Sidebar -->
+<div id="cart-sidebar" class="fixed top-0 right-0 w-full md:w-96 h-full bg-black bg-opacity-95 z-50 transform translate-x-full transition-transform duration-300 shadow-2xl">
+<div class="flex flex-col h-full">
+<div class="p-6 border-b border-gray-800">
+<div class="flex items-center justify-between">
+<h2 class="text-2xl font-bold text-white">Your Cart</h2>
+<button id="close-cart" class="text-white hover:text-primary">
+<div class="w-8 h-8 flex items-center justify-center">
+<i class="ri-close-line ri-lg"></i>
+</div>
+</button>
+</div>
+</div>
+<div id="cart-items" class="flex-1 overflow-y-auto p-6 custom-scrollbar">
+<div class="empty-cart text-center py-10">
+<div class="w-16 h-16 mx-auto mb-4 text-gray-500">
+<i class="ri-shopping-cart-line ri-3x"></i>
+</div>
+<p class="text-gray-400">Your cart is empty</p>
+<button onclick="showMenuChoice()" class="mt-4 px-6 py-2 bg-primary text-white rounded-button hover:bg-opacity-90 transition-all">Browse Menu</button>
+</div>
+</div>
+<div class="p-6 border-t border-gray-800">
+<div class="flex justify-between mb-4">
+<span class="text-gray-400">Subtotal</span>
+<span id="cart-subtotal" class="text-white font-medium">₵0.00</span>
+</div>
+<button id="checkout-button" class="w-full py-3 bg-primary text-white rounded-button hover:bg-opacity-90 transition-all font-medium">
+Proceed to Checkout
+</button>
+</div>
+</div>
+</div>
+
+<!-- Checkout Modal -->
+<div id="checkout-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+<div class="absolute inset-0 bg-black bg-opacity-70" id="checkout-overlay"></div>
+<div class="relative bg-gray-900 rounded-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto custom-scrollbar mx-4">
+<div class="p-6 border-b border-gray-800">
+<div class="flex items-center justify-between">
+<h2 class="text-2xl font-bold text-white">Complete Your Order</h2>
+<button id="close-checkout" class="text-white hover:text-primary">
+<div class="w-8 h-8 flex items-center justify-center">
+<i class="ri-close-line ri-lg"></i>
+</div>
+</button>
+</div>
+</div>
+<div class="p-6">
+<div class="mb-8">
+<h3 class="text-xl font-medium text-white mb-4">Order Summary</h3>
+<div id="checkout-items" class="space-y-4 mb-4">
+<!-- Checkout items will be dynamically added here -->
+</div>
+<div class="pt-4 border-t border-gray-800">
+<div class="flex justify-between mb-2">
+<span class="text-gray-400">Subtotal</span>
+<span id="checkout-subtotal" class="text-white">$0.00</span>
+</div>
+<div class="flex justify-between mb-2">
+<span class="text-gray-400">Delivery Fee</span>
+<span id="checkout-delivery" class="text-white">$0.00</span>
+</div>
+<div class="flex justify-between font-medium">
+<span class="text-white">Total</span>
+<span id="checkout-total" class="text-primary text-lg">$0.00</span>
+</div>
+</div>
+</div>
+<form id="checkout-form" class="space-y-6">
+<h3 class="text-xl font-medium text-white">Customer Information</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div>
+<label for="name" class="block text-sm font-medium text-gray-400 mb-1">Full Name</label>
+<input type="text" id="name" name="name" class="w-full bg-gray-800 border-none rounded text-white px-4 py-3 focus:ring-2 focus:ring-primary outline-none" required>
+</div>
+<div>
+<label for="phone" class="block text-sm font-medium text-gray-400 mb-1">Phone Number</label>
+<input type="tel" id="phone" name="phone" class="w-full bg-gray-800 border-none rounded text-white px-4 py-3 focus:ring-2 focus:ring-primary outline-none" required>
+</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-400 mb-3">Order Type</label>
+<div class="flex space-x-6">
+<label class="custom-radio">
+<input type="radio" name="order-type" value="pickup" checked>
+<span class="radio-mark mr-2"></span>
+<span>Pickup</span>
+</label>
+<label class="custom-radio">
+<input type="radio" name="order-type" value="delivery">
+<span class="radio-mark mr-2"></span>
+<span>Delivery</span>
+</label>
+</div>
+</div>
+<div id="delivery-details" class="hidden">
+<div class="mb-4">
+<label for="address" class="block text-sm font-medium text-gray-400 mb-1">Delivery Address</label>
+<input type="text" id="address" name="address" class="w-full bg-gray-800 border-none rounded text-white px-4 py-3 focus:ring-2 focus:ring-primary outline-none">
+</div>
+<div class="flex items-center space-x-2">
+<button type="button" id="use-location" class="flex items-center text-primary hover:text-white transition-colors">
+<div class="w-5 h-5 flex items-center justify-center mr-1">
+<i class="ri-map-pin-line"></i>
+</div>
+<span>Use my current location</span>
+</button>
+</div>
+</div>
+<div>
+<label for="notes" class="block text-sm font-medium text-gray-400 mb-1">Special Instructions (Optional)</label>
+<textarea id="notes" name="notes" rows="3" class="w-full bg-gray-800 border-none rounded text-white px-4 py-3 focus:ring-2 focus:ring-primary outline-none resize-none"></textarea>
+</div>
+<button type="submit" class="w-full py-4 bg-primary text-white rounded-button hover:bg-opacity-90 transition-all font-medium">
+Place Order
+</button>
+</form>
+</div>
+</div>
+</div>
+
+<!-- Menu Choice Modal -->
+<div id="menu-choice-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+<div class="absolute inset-0 bg-black bg-opacity-80" onclick="closeMenuChoice()"></div>
+<div class="relative bg-gray-900 rounded-lg p-8 max-w-md w-full mx-4 transform scale-95 transition-all duration-300">
+<div class="text-center">
+<div class="w-16 h-16 mx-auto mb-6 text-primary">
+<i class="ri-restaurant-2-line ri-3x"></i>
+</div>
+<h2 class="text-2xl font-bold text-white mb-4">Choose Your Menu</h2>
+<p class="text-gray-400 mb-8">What would you like to explore today?</p>
+<div class="space-y-4">
+<button onclick="redirectToMenu('food')" class="w-full py-4 bg-primary text-white rounded-button hover:bg-opacity-90 transition-all font-medium flex items-center justify-center space-x-3">
+<i class="ri-restaurant-line ri-lg"></i>
+<span>Food Menu</span>
+</button>
+<button onclick="redirectToMenu('drinks')" class="w-full py-4 bg-secondary text-white rounded-button hover:bg-opacity-90 transition-all font-medium flex items-center justify-center space-x-3">
+<i class="ri-cup-line ri-lg"></i>
+<span>Drinks Menu</span>
+</button>
+</div>
+<button onclick="closeMenuChoice()" class="mt-6 text-gray-400 hover:text-white transition-colors">
+<i class="ri-close-line mr-2"></i>Cancel
+</button>
+</div>
+</div>
+</div>
+
+<main>
+<section id="home" class="relative min-h-screen flex items-center">
+<div class="hero-bg"></div>
+<div class="hero-overlay"></div>
+<div class="container mx-auto px-4 py-20 relative z-10">
+<div class="w-full max-w-3xl">
+<h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+<span class="block">Experience Culinary</span>
+<span class="gradient-text">Excellence & Artistry</span>
+</h1>
+<p class="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl">
+Indulge in a symphony of flavors crafted with passion and precision.
+Our chefs blend tradition with innovation to create unforgettable dining experiences.
+</p>
+<div class="flex flex-wrap gap-4">
+<div class="dropdown relative">
+<button class="px-8 py-3 bg-primary text-white rounded-button hover:bg-opacity-90 transition-all font-medium whitespace-nowrap glow-effect">
+Explore Menu
+</button>
+<div class="dropdown-menu">
+<a href="food-menu.html" class="dropdown-item">
+<i class="ri-restaurant-line mr-2"></i>Food Menu
+</a>
+<a href="drinks-menu.html" class="dropdown-item">
+<i class="ri-cup-line mr-2"></i>Drinks Menu
+</a>
+</div>
+</div>
+<a href="#reservation" class="px-8 py-3 bg-transparent border-2 border-white text-white rounded-button hover:border-primary hover:text-primary transition-all font-medium whitespace-nowrap">
+Make Reservation
+</a>
+</div>
+</div>
+</div>
+<div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-white animate-bounce">
+<div class="w-8 h-8 flex items-center justify-center">
+<i class="ri-arrow-down-line ri-lg"></i>
+</div>
+</div>
+</section>
+<section id="featured" class="py-20 bg-gray-950">
+<div class="container mx-auto px-4">
+<div class="text-center mb-16">
+<h2 class="text-3xl md:text-4xl font-bold mb-4">Featured Specialties</h2>
+<p class="text-gray-400 max-w-2xl mx-auto">Our signature dishes that have captivated the hearts and palates of our guests</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="menu-item-enhanced">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=gourmet%20wagyu%20beef%20steak%20perfectly%20cooked%20medium%20rare%20with%20rosemary%20and%20garlic%20butter%2C%20served%20on%20a%20black%20slate%20plate%20with%20roasted%20vegetables%20and%20a%20red%20wine%20reduction%20sauce%2C%20professional%20food%20photography%20with%20dramatic%20lighting&width=600&height=400&seq=dish1&orientation=landscape" alt="Wagyu Steak" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Prime Wagyu Steak</h3>
+<span class="text-primary font-medium">₵49</span>
+</div>
+<p class="text-gray-400 mb-4">A5 Japanese Wagyu beef grilled to perfection, served with truffle mashed potatoes and seasonal vegetables.</p>
+<button class="add-to-cart-btn w-full" data-id="featured1" data-name="Prime Wagyu Steak" data-price="49" data-image="https://readdy.ai/api/search-image?query=gourmet%20wagyu%20beef%20steak%20perfectly%20cooked%20medium%20rare%20with%20rosemary%20and%20garlic%20butter%2C%20served%20on%20a%20black%20slate%20plate%20with%20roasted%20vegetables%20and%20a%20red%20wine%20reduction%20sauce%2C%20professional%20food%20photography%20with%20dramatic%20lighting&width=600&height=400&seq=dish1&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+<div class="menu-item-enhanced">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=elegant%20seafood%20platter%20with%20fresh%20lobster%2C%20king%20crab%20legs%2C%20oysters%2C%20and%20jumbo%20shrimp%20on%20ice%20with%20lemon%20wedges%20and%20various%20dipping%20sauces%2C%20professional%20food%20photography%20with%20dramatic%20lighting&width=600&height=400&seq=dish2&orientation=landscape" alt="Seafood Platter" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Royal Seafood Platter</h3>
+<span class="text-primary font-medium">₵65</span>
+</div>
+<p class="text-gray-400 mb-4">A luxurious assortment of fresh lobster, king crab, oysters, and jumbo shrimp served with signature sauces.</p>
+<button class="add-to-cart-btn w-full" data-id="featured2" data-name="Royal Seafood Platter" data-price="65" data-image="https://readdy.ai/api/search-image?query=elegant%20seafood%20platter%20with%20fresh%20lobster%2C%20king%20crab%20legs%2C%20oysters%2C%20and%20jumbo%20shrimp%20on%20ice%20with%20lemon%20wedges%20and%20various%20dipping%20sauces%2C%20professional%20food%20photography%20with%20dramatic%20lighting&width=600&height=400&seq=dish2&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+<div class="menu-item-enhanced">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=gourmet%20chocolate%20dessert%20with%20layers%20of%20dark%20chocolate%20mousse%2C%20chocolate%20ganache%2C%20and%20chocolate%20sponge%2C%20garnished%20with%20gold%20leaf%20and%20fresh%20berries%2C%20served%20on%20an%20elegant%20black%20plate%20with%20artistic%20presentation%2C%20professional%20food%20photography%20with%20dramatic%20lighting&width=600&height=400&seq=dish3&orientation=landscape" alt="Chocolate Symphony" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Chocolate Symphony</h3>
+<span class="text-primary font-medium">₵18</span>
+</div>
+<p class="text-gray-400 mb-4">A decadent dessert featuring layers of dark chocolate mousse, ganache, and sponge, garnished with gold leaf.</p>
+<button class="add-to-cart-btn w-full" data-id="featured3" data-name="Chocolate Symphony" data-price="18" data-image="https://readdy.ai/api/search-image?query=gourmet%20chocolate%20dessert%20with%20layers%20of%20dark%20chocolate%20mousse%2C%20chocolate%20ganache%2C%20and%20chocolate%20sponge%2C%20garnished%20with%20gold%20leaf%20and%20fresh%20berries%2C%20served%20on%20an%20elegant%20black%20plate%20with%20artistic%20presentation%2C%20professional%20food%20photography%20with%20dramatic%20lighting&width=600&height=400&seq=dish3&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="about" class="py-20 bg-black">
+<div class="container mx-auto px-4">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+<div>
+<h2 class="text-3xl md:text-4xl font-bold mb-6">Our Culinary Journey</h2>
+<p class="text-gray-300 mb-6">
+Founded in 2010 by renowned chef Alexander Pokyto, our restaurant has been on a mission to redefine fine dining through innovative techniques and exceptional ingredients.
+</p>
+<p class="text-gray-300 mb-8">
+Every dish tells a story of passion, tradition, and artistic expression. We source only the finest ingredients from local farmers and global artisans to create memorable culinary experiences.
+</p>
+<div class="space-y-6">
+<div class="timeline-item pl-8">
+<h3 class="text-xl font-medium mb-2">2010: The Beginning</h3>
+<p class="text-gray-400">Chef Pokyto opens the first location with a vision to blend traditional techniques with modern innovation.</p>
+</div>
+<div class="timeline-item pl-8">
+<h3 class="text-xl font-medium mb-2">2015: First Michelin Star</h3>
+<p class="text-gray-400">Our dedication to culinary excellence is recognized with our first Michelin star, marking a milestone in our journey.</p>
+</div>
+<div class="timeline-item pl-8">
+<h3 class="text-xl font-medium mb-2">2020: Global Expansion</h3>
+<p class="text-gray-400">We expand our unique dining experience to major cities worldwide, bringing our vision to global audiences.</p>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="gallery-item">
+<img src="https://readdy.ai/api/search-image?query=elegant%20restaurant%20interior%20with%20soft%20lighting%2C%20luxurious%20furnishings%2C%20and%20sophisticated%20table%20settings%2C%20professional%20interior%20photography%20with%20dramatic%20lighting&width=400&height=500&seq=about1&orientation=portrait" alt="Restaurant Interior" class="w-full h-full object-cover rounded">
+<div class="gallery-overlay">
+<button class="view-image px-4 py-2 bg-primary text-white rounded-button hover:bg-opacity-90 transition-all">
+View
+</button>
+</div>
+</div>
+<div class="gallery-item mt-8">
+<img src="https://readdy.ai/api/search-image?query=professional%20chef%20in%20white%20uniform%20and%20hat%20plating%20an%20elegant%20dish%20in%20a%20high-end%20restaurant%20kitchen%2C%20with%20stainless%20steel%20equipment%20and%20dramatic%20lighting&width=400&height=500&seq=about2&orientation=portrait" alt="Chef Plating" class="w-full h-full object-cover rounded">
+<div class="gallery-overlay">
+<button class="view-image px-4 py-2 bg-primary text-white rounded-button hover:bg-opacity-90 transition-all">
+View
+</button>
+</div>
+</div>
+<div class="gallery-item">
+<img src="https://readdy.ai/api/search-image?query=close-up%20of%20hands%20preparing%20gourmet%20food%20with%20tweezers%2C%20adding%20final%20touches%20to%20an%20artistic%20plate%20presentation%2C%20professional%20food%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=about3&orientation=landscape" alt="Food Preparation" class="w-full h-full object-cover rounded">
+<div class="gallery-overlay">
+<button class="view-image px-4 py-2 bg-primary text-white rounded-button hover:bg-opacity-90 transition-all">
+View
+</button>
+</div>
+</div>
+<div class="gallery-item">
+<img src="https://readdy.ai/api/search-image?query=elegant%20wine%20cellar%20with%20rows%20of%20premium%20wine%20bottles%2C%20wooden%20racks%2C%20and%20atmospheric%20lighting%2C%20professional%20interior%20photography&width=400&height=300&seq=about4&orientation=landscape" alt="Wine Cellar" class="w-full h-full object-cover rounded">
+<div class="gallery-overlay">
+<button class="view-image px-4 py-2 bg-primary text-white rounded-button hover:bg-opacity-90 transition-all">
+View
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8 mt-20">
+<div class="text-center p-8 bg-gray-900 rounded-lg">
+<div class="text-4xl font-bold mb-2 gradient-text counter-value" data-target="14">0</div>
+<p class="text-gray-400">Years of Excellence</p>
+</div>
+<div class="text-center p-8 bg-gray-900 rounded-lg">
+<div class="text-4xl font-bold mb-2 gradient-text counter-value" data-target="3">0</div>
+<p class="text-gray-400">Michelin Stars</p>
+</div>
+<div class="text-center p-8 bg-gray-900 rounded-lg">
+<div class="text-4xl font-bold mb-2 gradient-text counter-value" data-target="12">0</div>
+<p class="text-gray-400">Global Locations</p>
+</div>
+<div class="text-center p-8 bg-gray-900 rounded-lg">
+<div class="text-4xl font-bold mb-2 gradient-text counter-value" data-target="50000">0</div>
+<p class="text-gray-400">Happy Customers</p>
+</div>
+</div>
+</div>
+</section>
+<section id="testimonials" class="py-20 bg-gray-950">
+<div class="container mx-auto px-4">
+<div class="text-center mb-16">
+<h2 class="text-3xl md:text-4xl font-bold mb-4">What Our Guests Say</h2>
+<p class="text-gray-400 max-w-2xl mx-auto">The experiences and stories shared by our valued guests</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="p-8 bg-gray-900 rounded-lg">
+<div class="flex items-center mb-4">
+<div class="text-primary">
+<div class="flex">
+<i class="ri-star-fill mr-1"></i>
+<i class="ri-star-fill mr-1"></i>
+<i class="ri-star-fill mr-1"></i>
+<i class="ri-star-fill mr-1"></i>
+<i class="ri-star-fill"></i>
+</div>
+</div>
+</div>
+<div class="mb-6">
+<p class="text-gray-300 quote relative px-4">
+An extraordinary dining experience that transcends mere food. Each dish was a masterpiece, and the service was impeccable. The wine pairing recommendations were spot on.
+</p>
+</div>
+<div class="flex items-center">
+<div class="w-12 h-12 rounded-full overflow-hidden mr-4">
+<img src="https://readdy.ai/api/search-image?query=professional%20headshot%20of%20a%20sophisticated%20middle-aged%20woman%20with%20elegant%20styling%2C%20neutral%20background%2C%20professional%20portrait%20photography&width=100&height=100&seq=test1&orientation=squarish" alt="Emily Richardson" class="w-full h-full object-cover">
+</div>
+<div>
+<h4 class="font-medium">Emily Eshun</h4>
+<p class="text-gray-500 text-sm">Food Critic</p>
+</div>
+</div>
+</div>
+<div class="p-8 bg-gray-900 rounded-lg">
+<div class="flex items-center mb-4">
+<div class="text-primary">
+<div class="flex">
+<i class="ri-star-fill mr-1"></i>
+<i class="ri-star-fill mr-1"></i>
+<i class="ri-star-fill mr-1"></i>
+<i class="ri-star-fill mr-1"></i>
+<i class="ri-star-fill"></i>
+</div>
+</div>
+</div>
+<div class="mb-6">
+<p class="text-gray-300 quote relative px-4">
+We celebrated our anniversary here and it was unforgettable. The tasting menu was a journey of flavors, and the staff made us feel special throughout the evening.
+</p>
+</div>
+<div class="flex items-center">
+<div class="w-12 h-12 rounded-full overflow-hidden mr-4">
+<img src="https://readdy.ai/api/search-image?query=professional%20headshot%20of%20a%20well-dressed%20middle-aged%20man%20with%20glasses%2C%20neutral%20background%2C%20professional%20portrait%20photography&width=100&height=100&seq=test2&orientation=squarish" alt="Michael & Sarah Thompson" class="w-full h-full object-cover">
+</div>
+<div>
+<h4 class="font-medium">Michael & Sarah Boateng</h4>
+<p class="text-gray-500 text-sm">Regular Guests</p>
+</div>
+</div>
+</div>
+<div class="p-8 bg-gray-900 rounded-lg">
+<div class="flex items-center mb-4">
+<div class="text-primary">
+<div class="flex">
+<i class="ri-star-fill mr-1"></i>
+<i class="ri-star-fill mr-1"></i>
+<i class="ri-star-fill mr-1"></i>
+<i class="ri-star-fill mr-1"></i>
+<i class="ri-star-fill"></i>
+</div>
+</div>
+</div>
+<div class="mb-6">
+<p class="text-gray-300 quote relative px-4">
+As someone who has dined at top restaurants worldwide, I can confidently say that Pokyto's stands among the best. The creativity and execution are unmatched.
+</p>
+</div>
+<div class="flex items-center">
+<div class="w-12 h-12 rounded-full overflow-hidden mr-4">
+<img src="https://readdy.ai/api/search-image?query=professional%20headshot%20of%20a%20distinguished%20older%20gentleman%20with%20gray%20hair%20in%20business%20attire%2C%20neutral%20background%2C%20professional%20portrait%20photography&width=100&height=100&seq=test3&orientation=squarish" alt="Jonathan Blackwell" class="w-full h-full object-cover">
+</div>
+<div>
+<h4 class="font-medium">Jonathan Asamoah</h4>
+<p class="text-gray-500 text-sm">Culinary Enthusiast</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="menu" class="py-20 bg-black">
+<div class="container mx-auto px-4">
+<div class="text-center mb-16">
+<h2 class="text-3xl md:text-4xl font-bold mb-4">Our Exquisite Menu</h2>
+<p class="text-gray-400 max-w-2xl mx-auto">Discover our carefully curated selection of culinary masterpieces</p>
+</div>
+<div class="flex justify-center mb-12">
+<div class="inline-flex bg-gray-900 rounded-full p-1">
+<button class="tab-button active px-6 py-2 rounded-full whitespace-nowrap transition-all" data-tab="food">Food</button>
+<button class="tab-button px-6 py-2 rounded-full whitespace-nowrap transition-all" data-tab="drinks">Drinks</button>
+<button class="tab-button px-6 py-2 rounded-full whitespace-nowrap transition-all" data-tab="pork">Pork Specialties</button>
+</div>
+</div>
+<div class="tab-content" id="food-tab">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Food Item 1 -->
+<div class="menu-item bg-gray-900 rounded-lg overflow-hidden">
+<div class="h-48 overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=gourmet%20truffle%20risotto%20with%20wild%20mushrooms%2C%20parmesan%20cheese%2C%20and%20fresh%20herbs%2C%20served%20in%20an%20elegant%20white%20bowl%2C%20professional%20food%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=food1&orientation=landscape" alt="Truffle Risotto" class="w-full h-full object-cover object-top">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-2">
+<h3 class="text-lg font-bold">Truffle Risotto</h3>
+<span class="text-primary font-medium">$32</span>
+</div>
+<p class="text-gray-400 text-sm mb-4">Arborio rice cooked with wild mushrooms, finished with black truffle and aged parmesan.</p>
+<button class="add-to-cart-btn w-full py-2 bg-primary hover:bg-opacity-90 text-white rounded-button transition-all font-medium" data-id="food1" data-name="Truffle Risotto" data-price="32" data-image="https://readdy.ai/api/search-image?query=gourmet%20truffle%20risotto%20with%20wild%20mushrooms%2C%20parmesan%20cheese%2C%20and%20fresh%20herbs%2C%20served%20in%20an%20elegant%20white%20bowl%2C%20professional%20food%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=food1&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+<!-- Food Item 2 -->
+<div class="menu-item bg-gray-900 rounded-lg overflow-hidden">
+<div class="h-48 overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=seared%20scallops%20with%20pea%20puree%2C%20crispy%20pancetta%2C%20and%20microgreens%2C%20served%20on%20a%20black%20plate%20with%20artistic%20presentation%2C%20professional%20food%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=food2&orientation=landscape" alt="Seared Scallops" class="w-full h-full object-cover object-top">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-2">
+<h3 class="text-lg font-bold">Seared Scallops</h3>
+<span class="text-primary font-medium">$36</span>
+</div>
+<p class="text-gray-400 text-sm mb-4">Hand-dived scallops with pea puree, crispy pancetta and citrus beurre blanc.</p>
+<button class="add-to-cart-btn w-full py-2 bg-primary hover:bg-opacity-90 text-white rounded-button transition-all font-medium" data-id="food2" data-name="Seared Scallops" data-price="36" data-image="https://readdy.ai/api/search-image?query=seared%20scallops%20with%20pea%20puree%2C%20crispy%20pancetta%2C%20and%20microgreens%2C%20served%20on%20a%20black%20plate%20with%20artistic%20presentation%2C%20professional%20food%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=food2&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+<!-- Food Item 3 -->
+<div class="menu-item bg-gray-900 rounded-lg overflow-hidden">
+<div class="h-48 overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=rack%20of%20lamb%20with%20herb%20crust%2C%20roasted%20vegetables%2C%20and%20red%20wine%20jus%2C%20served%20on%20an%20elegant%20white%20plate%2C%20professional%20food%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=food3&orientation=landscape" alt="Herb Crusted Lamb" class="w-full h-full object-cover object-top">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-2">
+<h3 class="text-lg font-bold">Herb Crusted Lamb</h3>
+<span class="text-primary font-medium">$42</span>
+</div>
+<p class="text-gray-400 text-sm mb-4">New Zealand rack of lamb with herb crust, roasted vegetables and red wine jus.</p>
+<button class="add-to-cart-btn w-full py-2 bg-primary hover:bg-opacity-90 text-white rounded-button transition-all font-medium" data-id="food3" data-name="Herb Crusted Lamb" data-price="42" data-image="https://readdy.ai/api/search-image?query=rack%20of%20lamb%20with%20herb%20crust%2C%20roasted%20vegetables%2C%20and%20red%20wine%20jus%2C%20served%20on%20an%20elegant%20white%20plate%2C%20professional%20food%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=food3&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+<!-- Food Item 4 -->
+<div class="menu-item bg-gray-900 rounded-lg overflow-hidden">
+<div class="h-48 overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=lobster%20ravioli%20in%20saffron%20cream%20sauce%20with%20fresh%20herbs%20and%20edible%20flowers%2C%20served%20in%20an%20elegant%20white%20bowl%2C%20professional%20food%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=food4&orientation=landscape" alt="Lobster Ravioli" class="w-full h-full object-cover object-top">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-2">
+<h3 class="text-lg font-bold">Lobster Ravioli</h3>
+<span class="text-primary font-medium">$38</span>
+</div>
+<p class="text-gray-400 text-sm mb-4">Handmade pasta filled with fresh lobster in a saffron cream sauce with herbs.</p>
+<button class="add-to-cart-btn w-full py-2 bg-primary hover:bg-opacity-90 text-white rounded-button transition-all font-medium" data-id="food4" data-name="Lobster Ravioli" data-price="38" data-image="https://readdy.ai/api/search-image?query=lobster%20ravioli%20in%20saffron%20cream%20sauce%20with%20fresh%20herbs%20and%20edible%20flowers%2C%20served%20in%20an%20elegant%20white%20bowl%2C%20professional%20food%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=food4&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+<!-- Food Item 5 -->
+<div class="menu-item bg-gray-900 rounded-lg overflow-hidden">
+<div class="h-48 overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=beef%20wellington%20sliced%20to%20show%20perfect%20medium-rare%20center%2C%20with%20mushroom%20duxelles%20and%20puff%20pastry%2C%20served%20with%20roasted%20vegetables%20and%20sauce%2C%20professional%20food%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=food5&orientation=landscape" alt="Beef Wellington" class="w-full h-full object-cover object-top">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-2">
+<h3 class="text-lg font-bold">Beef Wellington</h3>
+<span class="text-primary font-medium">$45</span>
+</div>
+<p class="text-gray-400 text-sm mb-4">Tender beef fillet with mushroom duxelles, wrapped in puff pastry with red wine sauce.</p>
+<button class="add-to-cart-btn w-full py-2 bg-primary hover:bg-opacity-90 text-white rounded-button transition-all font-medium" data-id="food5" data-name="Beef Wellington" data-price="45" data-image="https://readdy.ai/api/search-image?query=beef%20wellington%20sliced%20to%20show%20perfect%20medium-rare%20center%2C%20with%20mushroom%20duxelles%20and%20puff%20pastry%2C%20served%20with%20roasted%20vegetables%20and%20sauce%2C%20professional%20food%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=food5&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+<!-- Food Item 6 -->
+<div class="menu-item bg-gray-900 rounded-lg overflow-hidden">
+<div class="h-48 overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=miso%20black%20cod%20with%20bok%20choy%2C%20shiitake%20mushrooms%2C%20and%20ginger%20soy%20glaze%2C%20served%20on%20a%20black%20plate%20with%20artistic%20presentation%2C%20professional%20food%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=food6&orientation=landscape" alt="Miso Black Cod" class="w-full h-full object-cover object-top">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-2">
+<h3 class="text-lg font-bold">Miso Black Cod</h3>
+<span class="text-primary font-medium">$40</span>
+</div>
+<p class="text-gray-400 text-sm mb-4">Alaskan black cod marinated in miso, served with bok choy and shiitake mushrooms.</p>
+<button class="add-to-cart-btn w-full py-2 bg-primary hover:bg-opacity-90 text-white rounded-button transition-all font-medium" data-id="food6" data-name="Miso Black Cod" data-price="40" data-image="https://readdy.ai/api/search-image?query=miso%20black%20cod%20with%20bok%20choy%2C%20shiitake%20mushrooms%2C%20and%20ginger%20soy%20glaze%2C%20served%20on%20a%20black%20plate%20with%20artistic%20presentation%2C%20professional%20food%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=food6&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+<!-- More food items can be added here -->
+</div>
+<div class="text-center mt-12">
+<div class="dropdown relative inline-block">
+<button class="load-more px-8 py-3 bg-transparent border-2 border-white text-white rounded-button hover:border-primary hover:text-primary transition-all font-medium whitespace-nowrap">
+View More
+</button>
+<div class="dropdown-menu">
+<a href="food-menu.html" class="dropdown-item">
+<i class="ri-restaurant-line mr-2"></i>Full Food Menu
+</a>
+<a href="drinks-menu.html" class="dropdown-item">
+<i class="ri-cup-line mr-2"></i>Full Drinks Menu
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="tab-content hidden" id="drinks-tab">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Drink Item 1 -->
+<div class="menu-item bg-gray-900 rounded-lg overflow-hidden">
+<div class="h-48 overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=elegant%20craft%20cocktail%20with%20smoked%20bourbon%2C%20orange%20peel%2C%20and%20aromatic%20bitters%20in%20a%20crystal%20glass%20with%20a%20large%20ice%20cube%2C%20professional%20beverage%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=drink1&orientation=landscape" alt="Smoked Old Fashioned" class="w-full h-full object-cover object-top">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-2">
+<h3 class="text-lg font-bold">Smoked Old Fashioned</h3>
+<span class="text-primary font-medium">$18</span>
+</div>
+<p class="text-gray-400 text-sm mb-4">Woodford Reserve bourbon, aromatic bitters, sugar, and orange peel with applewood smoke.</p>
+<button class="add-to-cart-btn w-full py-2 bg-primary hover:bg-opacity-90 text-white rounded-button transition-all font-medium" data-id="drink1" data-name="Smoked Old Fashioned" data-price="18" data-image="https://readdy.ai/api/search-image?query=elegant%20craft%20cocktail%20with%20smoked%20bourbon%2C%20orange%20peel%2C%20and%20aromatic%20bitters%20in%20a%20crystal%20glass%20with%20a%20large%20ice%20cube%2C%20professional%20beverage%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=drink1&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+<!-- Drink Item 2 -->
+<div class="menu-item bg-gray-900 rounded-lg overflow-hidden">
+<div class="h-48 overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=elegant%20champagne%20cocktail%20with%20elderflower%20liqueur%2C%20fresh%20berries%2C%20and%20edible%20flowers%20in%20a%20champagne%20flute%2C%20professional%20beverage%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=drink2&orientation=landscape" alt="Royal Elderflower" class="w-full h-full object-cover object-top">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-2">
+<h3 class="text-lg font-bold">Royal Elderflower</h3>
+<span class="text-primary font-medium">$22</span>
+</div>
+<p class="text-gray-400 text-sm mb-4">Dom Pérignon champagne with St-Germain elderflower liqueur, fresh berries, and edible flowers.</p>
+<button class="add-to-cart-btn w-full py-2 bg-primary hover:bg-opacity-90 text-white rounded-button transition-all font-medium" data-id="drink2" data-name="Royal Elderflower" data-price="22" data-image="https://readdy.ai/api/search-image?query=elegant%20champagne%20cocktail%20with%20elderflower%20liqueur%2C%20fresh%20berries%2C%20and%20edible%20flowers%20in%20a%20champagne%20flute%2C%20professional%20beverage%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=drink2&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+<!-- Drink Item 3 -->
+<div class="menu-item bg-gray-900 rounded-lg overflow-hidden">
+<div class="h-48 overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=sophisticated%20martini%20with%20premium%20vodka%2C%20dry%20vermouth%2C%20and%20olive%20garnish%20in%20a%20chilled%20martini%20glass%2C%20professional%20beverage%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=drink3&orientation=landscape" alt="Classic Martini" class="w-full h-full object-cover object-top">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-2">
+<h3 class="text-lg font-bold">Classic Martini</h3>
+<span class="text-primary font-medium">$16</span>
+</div>
+<p class="text-gray-400 text-sm mb-4">Grey Goose vodka or Bombay Sapphire gin with dry vermouth, served with olive or lemon twist.</p>
+<button class="add-to-cart-btn w-full py-2 bg-primary hover:bg-opacity-90 text-white rounded-button transition-all font-medium" data-id="drink3" data-name="Classic Martini" data-price="16" data-image="https://readdy.ai/api/search-image?query=sophisticated%20martini%20with%20premium%20vodka%2C%20dry%20vermouth%2C%20and%20olive%20garnish%20in%20a%20chilled%20martini%20glass%2C%20professional%20beverage%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=drink3&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+<!-- Drink Item 4 -->
+<div class="menu-item bg-gray-900 rounded-lg overflow-hidden">
+<div class="h-48 overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=elegant%20red%20wine%20in%20a%20crystal%20glass%20next%20to%20a%20premium%20bottle%20of%20Bordeaux%2C%20with%20grapes%20and%20cheese%20pairing%2C%20professional%20beverage%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=drink4&orientation=landscape" alt="Château Margaux" class="w-full h-full object-cover object-top">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-2">
+<h3 class="text-lg font-bold">Château Margaux</h3>
+<span class="text-primary font-medium">₵35</span>
+</div>
+<p class="text-gray-400 text-sm mb-4">Premier Grand Cru Classé Bordeaux with notes of black currant, violet, and cedar (glass).</p>
+<button class="add-to-cart-btn w-full py-2 bg-primary hover:bg-opacity-90 text-white rounded-button transition-all font-medium" data-id="drink4" data-name="Château Margaux" data-price="35" data-image="https://readdy.ai/api/search-image?query=elegant%20red%20wine%20in%20a%20crystal%20glass%20next%20to%20a%20premium%20bottle%20of%20Bordeaux%2C%20with%20grapes%20and%20cheese%20pairing%2C%20professional%20beverage%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=drink4&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+<!-- Drink Item 5 -->
+<div class="menu-item bg-gray-900 rounded-lg overflow-hidden">
+<div class="h-48 overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=exotic%20craft%20cocktail%20with%20Japanese%20whisky%2C%20yuzu%2C%20ginger%2C%20and%20shiso%20leaf%20in%20a%20traditional%20Japanese%20inspired%20glass%2C%20professional%20beverage%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=drink5&orientation=landscape" alt="Tokyo Drift" class="w-full h-full object-cover object-top">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-2">
+<h3 class="text-lg font-bold">Tokyo Drift</h3>
+<span class="text-primary font-medium">₵20</span>
+</div>
+<p class="text-gray-400 text-sm mb-4">Hibiki Japanese whisky, yuzu, ginger, shiso leaf, and sparkling sake for a refreshing twist.</p>
+<button class="add-to-cart-btn w-full py-2 bg-primary hover:bg-opacity-90 text-white rounded-button transition-all font-medium" data-id="drink5" data-name="Tokyo Drift" data-price="20" data-image="https://readdy.ai/api/search-image?query=exotic%20craft%20cocktail%20with%20Japanese%20whisky%2C%20yuzu%2C%20ginger%2C%20and%20shiso%20leaf%20in%20a%20traditional%20Japanese%20inspired%20glass%2C%20professional%20beverage%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=drink5&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+<!-- Drink Item 6 -->
+<div class="menu-item bg-gray-900 rounded-lg overflow-hidden">
+<div class="h-48 overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=artisanal%20non-alcoholic%20cocktail%20with%20fresh%20fruit%20purees%2C%20herbs%2C%20and%20sparkling%20water%20in%20a%20crystal%20glass%20with%20garnishes%2C%20professional%20beverage%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=drink6&orientation=landscape" alt="Garden Elixir" class="w-full h-full object-cover object-top">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-2">
+<h3 class="text-lg font-bold">Garden Elixir</h3>
+<span class="text-primary font-medium">₵14</span>
+</div>
+<p class="text-gray-400 text-sm mb-4">House-made non-alcoholic blend of fresh cucumber, elderflower, mint, and sparkling water.</p>
+<button class="add-to-cart-btn w-full py-2 bg-primary hover:bg-opacity-90 text-white rounded-button transition-all font-medium" data-id="drink6" data-name="Garden Elixir" data-price="14" data-image="https://readdy.ai/api/search-image?query=artisanal%20non-alcoholic%20cocktail%20with%20fresh%20fruit%20purees%2C%20herbs%2C%20and%20sparkling%20water%20in%20a%20crystal%20glass%20with%20garnishes%2C%20professional%20beverage%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=drink6&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+<!-- More drink items can be added here -->
+</div>
+<div class="text-center mt-12">
+<button onclick="showMenuChoice()" class="load-more px-8 py-3 bg-transparent border-2 border-white text-white rounded-button hover:border-primary hover:text-primary transition-all font-medium whitespace-nowrap">
+View More
+</button>
+</div>
+</div>
+<div class="tab-content hidden" id="pork-tab">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Pork Item 1 -->
+<div class="menu-item bg-gray-900 rounded-lg overflow-hidden">
+<div class="h-48 overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=slow-roasted%20pork%20belly%20with%20crispy%20skin%2C%20apple%20puree%2C%20and%20caramelized%20vegetables%2C%20served%20on%20an%20elegant%20plate%20with%20artistic%20presentation%2C%20professional%20food%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=pork1&orientation=landscape" alt="Crispy Pork Belly" class="w-full h-full object-cover object-top">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-2">
+<h3 class="text-lg font-bold">Crispy Pork Belly</h3>
+<span class="text-primary font-medium">₵34</span>
+</div>
+<p class="text-gray-400 text-sm mb-4">Slow-roasted pork belly with crispy skin, apple puree, and caramelized vegetables.</p>
+<button class="add-to-cart w-full py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-button transition-colors" data-id="pork1" data-name="Crispy Pork Belly" data-price="34" data-image="https://readdy.ai/api/search-image?query=slow-roasted%20pork%20belly%20with%20crispy%20skin%2C%20apple%20puree%2C%20and%20caramelized%20vegetables%2C%20served%20on%20an%20elegant%20plate%20with%20artistic%20presentation%2C%20professional%20food%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=pork1&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+<!-- Pork Item 2 -->
+<div class="menu-item bg-gray-900 rounded-lg overflow-hidden">
+<div class="h-48 overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=iberico%20pork%20chop%20with%20cherry%20reduction%2C%20truffle%20mashed%20potatoes%2C%20and%20grilled%20asparagus%2C%20served%20on%20an%20elegant%20plate%20with%20artistic%20presentation%2C%20professional%20food%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=pork2&orientation=landscape" alt="Iberico Pork Chop" class="w-full h-full object-cover object-top">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-2">
+<h3 class="text-lg font-bold">Iberico Pork Chop</h3>
+<span class="text-primary font-medium">₵38</span>
+</div>
+<p class="text-gray-400 text-sm mb-4">Spanish Iberico pork chop with cherry reduction, truffle mashed potatoes, and grilled asparagus.</p>
+<button class="add-to-cart w-full py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-button transition-colors" data-id="pork2" data-name="Iberico Pork Chop" data-price="38" data-image="https://readdy.ai/api/search-image?query=iberico%20pork%20chop%20with%20cherry%20reduction%2C%20truffle%20mashed%20potatoes%2C%20and%20grilled%20asparagus%2C%20served%20on%20an%20elegant%20plate%20with%20artistic%20presentation%2C%20professional%20food%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=pork2&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+<!-- Pork Item 3 -->
+<div class="menu-item bg-gray-900 rounded-lg overflow-hidden">
+<div class="h-48 overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=porchetta%20with%20crispy%20skin%2C%20herbs%2C%20and%20garlic%2C%20sliced%20and%20served%20with%20roasted%20vegetables%20and%20jus%2C%20professional%20food%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=pork3&orientation=landscape" alt="Italian Porchetta" class="w-full h-full object-cover object-top">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-2">
+<h3 class="text-lg font-bold">Italian Porchetta</h3>
+<span class="text-primary font-medium">₵36</span>
+</div>
+<p class="text-gray-400 text-sm mb-4">Traditional Italian porchetta with herbs and garlic, served with roasted vegetables and jus.</p>
+<button class="add-to-cart w-full py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-button transition-colors" data-id="pork3" data-name="Italian Porchetta" data-price="36" data-image="https://readdy.ai/api/search-image?query=porchetta%20with%20crispy%20skin%2C%20herbs%2C%20and%20garlic%2C%20sliced%20and%20served%20with%20roasted%20vegetables%20and%20jus%2C%20professional%20food%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=pork3&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+<!-- Pork Item 4 -->
+<div class="menu-item bg-gray-900 rounded-lg overflow-hidden">
+<div class="h-48 overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=pork%20tenderloin%20wrapped%20in%20prosciutto%20with%20sage%2C%20served%20with%20polenta%20and%20roasted%20cherry%20tomatoes%2C%20professional%20food%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=pork4&orientation=landscape" alt="Prosciutto-Wrapped Tenderloin" class="w-full h-full object-cover object-top">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-2">
+<h3 class="text-lg font-bold">Prosciutto-Wrapped Tenderloin</h3>
+<span class="text-primary font-medium">₵32</span>
+</div>
+<p class="text-gray-400 text-sm mb-4">Pork tenderloin wrapped in prosciutto with sage, served with creamy polenta and roasted tomatoes.</p>
+<button class="add-to-cart w-full py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-button transition-colors" data-id="pork4" data-name="Prosciutto-Wrapped Tenderloin" data-price="32" data-image="https://readdy.ai/api/search-image?query=pork%20tenderloin%20wrapped%20in%20prosciutto%20with%20sage%2C%20served%20with%20polenta%20and%20roasted%20cherry%20tomatoes%2C%20professional%20food%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=pork4&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+<!-- Pork Item 5 -->
+<div class="menu-item bg-gray-900 rounded-lg overflow-hidden">
+<div class="h-48 overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=braised%20pork%20cheeks%20with%20red%20wine%20sauce%2C%20pearl%20onions%2C%20and%20mushrooms%2C%20served%20with%20creamy%20mashed%20potatoes%2C%20professional%20food%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=pork5&orientation=landscape" alt="Braised Pork Cheeks" class="w-full h-full object-cover object-top">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-2">
+<h3 class="text-lg font-bold">Braised Pork Cheeks</h3>
+<span class="text-primary font-medium">₵30</span>
+</div>
+<p class="text-gray-400 text-sm mb-4">Tender pork cheeks braised in red wine with pearl onions and mushrooms, served with mashed potatoes.</p>
+<button class="add-to-cart w-full py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-button transition-colors" data-id="pork5" data-name="Braised Pork Cheeks" data-price="30" data-image="https://readdy.ai/api/search-image?query=braised%20pork%20cheeks%20with%20red%20wine%20sauce%2C%20pearl%20onions%2C%20and%20mushrooms%2C%20served%20with%20creamy%20mashed%20potatoes%2C%20professional%20food%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=pork5&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+<!-- Pork Item 6 -->
+<div class="menu-item bg-gray-900 rounded-lg overflow-hidden">
+<div class="h-48 overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=kurobuta%20pork%20ribs%20with%20asian%20glaze%2C%20pickled%20vegetables%2C%20and%20steamed%20rice%2C%20professional%20food%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=pork6&orientation=landscape" alt="Kurobuta Pork Ribs" class="w-full h-full object-cover object-top">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-2">
+<h3 class="text-lg font-bold">Kurobuta Pork Ribs</h3>
+<span class="text-primary font-medium">₵35</span>
+</div>
+<p class="text-gray-400 text-sm mb-4">Japanese Kurobuta pork ribs with Asian-inspired glaze, pickled vegetables, and steamed rice.</p>
+<button class="add-to-cart w-full py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-button transition-colors" data-id="pork6" data-name="Kurobuta Pork Ribs" data-price="35" data-image="https://readdy.ai/api/search-image?query=kurobuta%20pork%20ribs%20with%20asian%20glaze%2C%20pickled%20vegetables%2C%20and%20steamed%20rice%2C%20professional%20food%20photography%20with%20dramatic%20lighting&width=400&height=300&seq=pork6&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+<!-- More pork items can be added here -->
+</div>
+<div class="text-center mt-12">
+<button onclick="showMenuChoice()" class="load-more px-8 py-3 bg-transparent border-2 border-white text-white rounded-button hover:border-primary hover:text-primary transition-all font-medium whitespace-nowrap">
+View More
+</button>
+</div>
+</div>
+</div>
+</section>
+<section id="reservation" class="py-20 bg-gray-950">
+<div class="container mx-auto px-4">
+<div class="text-center mb-16">
+<h2 class="text-3xl md:text-4xl font-bold mb-4">Make a Reservation</h2>
+<p class="text-gray-400 max-w-2xl mx-auto">Reserve your table for an unforgettable dining experience</p>
+</div>
+<div class="max-w-3xl mx-auto">
+<form class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div>
+<label for="reservation-name" class="block text-sm font-medium text-gray-400 mb-1">Full Name</label>
+<input type="text" id="reservation-name" class="w-full bg-gray-900 border-none rounded text-white px-4 py-3 focus:ring-2 focus:ring-primary outline-none" required>
+</div>
+<div>
+<label for="reservation-email" class="block text-sm font-medium text-gray-400 mb-1">Email Address</label>
+<input type="email" id="reservation-email" class="w-full bg-gray-900 border-none rounded text-white px-4 py-3 focus:ring-2 focus:ring-primary outline-none" required>
+</div>
+<div>
+<label for="reservation-phone" class="block text-sm font-medium text-gray-400 mb-1">Phone Number</label>
+<input type="tel" id="reservation-phone" class="w-full bg-gray-900 border-none rounded text-white px-4 py-3 focus:ring-2 focus:ring-primary outline-none" required>
+</div>
+<div>
+<label for="reservation-guests" class="block text-sm font-medium text-gray-400 mb-1">Number of Guests</label>
+<input type="number" id="reservation-guests" min="1" max="20" class="w-full bg-gray-900 border-none rounded text-white px-4 py-3 focus:ring-2 focus:ring-primary outline-none" required>
+</div>
+<div>
+<label for="reservation-date" class="block text-sm font-medium text-gray-400 mb-1">Date</label>
+<input type="date" id="reservation-date" class="w-full bg-gray-900 border-none rounded text-white px-4 py-3 focus:ring-2 focus:ring-primary outline-none" required>
+</div>
+<div>
+<label for="reservation-time" class="block text-sm font-medium text-gray-400 mb-1">Time</label>
+<input type="time" id="reservation-time" class="w-full bg-gray-900 border-none rounded text-white px-4 py-3 focus:ring-2 focus:ring-primary outline-none" required>
+</div>
+<div class="md:col-span-2">
+<label for="reservation-special" class="block text-sm font-medium text-gray-400 mb-1">Special Requests (Optional)</label>
+<textarea id="reservation-special" rows="3" class="w-full bg-gray-900 border-none rounded text-white px-4 py-3 focus:ring-2 focus:ring-primary outline-none resize-none"></textarea>
+</div>
+<div class="md:col-span-2 text-center">
+<button type="submit" class="px-8 py-3 bg-primary text-white rounded-button hover:bg-opacity-90 transition-all font-medium whitespace-nowrap">
+Reserve Table
+</button>
+</div>
+</form>
+</div>
+</div>
+</section>
+<section id="contact" class="py-20 bg-black">
+<div class="container mx-auto px-4">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+<div>
+<h2 class="text-3xl md:text-4xl font-bold mb-6">Get in Touch</h2>
+<p class="text-gray-300 mb-8">We'd love to hear from you. Contact us for inquiries, feedback, or special event planning.</p>
+<div class="space-y-6">
+<div class="flex items-start">
+<div class="w-12 h-12 rounded-full bg-gray-900 flex items-center justify-center mr-4 pulse-icon">
+<i class="ri-map-pin-line text-primary"></i>
+</div>
+<div>
+<h3 class="text-lg font-medium mb-1">Location</h3>
+<p class="text-gray-400">123 Gourmet Avenue, Culinary District<br>New York, NY 10001</p>
+</div>
+</div>
+<div class="flex items-start">
+<div class="w-12 h-12 rounded-full bg-gray-900 flex items-center justify-center mr-4 pulse-icon">
+<i class="ri-time-line text-primary"></i>
+</div>
+<div>
+<h3 class="text-lg font-medium mb-1">Hours</h3>
+<p class="text-gray-400">
+Monday - Thursday: 5:30 PM - 10:30 PM<br>
+Friday - Saturday: 5:30 PM - 11:30 PM<br>
+Sunday: 5:00 PM - 10:00 PM
+</p>
+</div>
+</div>
+<div class="flex items-start">
+<div class="w-12 h-12 rounded-full bg-gray-900 flex items-center justify-center mr-4 pulse-icon">
+<i class="ri-phone-line text-primary"></i>
+</div>
+<div>
+<h3 class="text-lg font-medium mb-1">Contact</h3>
+<p class="text-gray-400">
+Phone: +1 (212) 555-1234<br>
+Email: info@pokytos.com
+</p>
+</div>
+</div>
+</div>
+<div class="mt-8">
+<h3 class="text-lg font-medium mb-4">Follow Us</h3>
+<div class="flex space-x-4">
+<a href="#" class="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-white hover:bg-primary transition-colors">
+<i class="ri-instagram-line"></i>
+</a>
+<a href="#" class="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-white hover:bg-primary transition-colors">
+<i class="ri-facebook-line"></i>
+</a>
+<a href="#" class="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-white hover:bg-primary transition-colors">
+<i class="ri-twitter-x-line"></i>
+</a>
+<a href="#" class="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-white hover:bg-primary transition-colors">
+<i class="ri-youtube-line"></i>
+</a>
+</div>
+</div>
+</div>
+<div>
+<div class="bg-gray-900 rounded-lg p-8">
+<h3 class="text-xl font-bold mb-6">Send Us a Message</h3>
+<form class="space-y-6">
+<div>
+<label for="contact-name" class="block text-sm font-medium text-gray-400 mb-1">Your Name</label>
+<input type="text" id="contact-name" class="w-full bg-gray-800 border-none rounded text-white px-4 py-3 focus:ring-2 focus:ring-primary outline-none" required>
+</div>
+<div>
+<label for="contact-email" class="block text-sm font-medium text-gray-400 mb-1">Email Address</label>
+<input type="email" id="contact-email" class="w-full bg-gray-800 border-none rounded text-white px-4 py-3 focus:ring-2 focus:ring-primary outline-none" required>
+</div>
+<div>
+<label for="contact-subject" class="block text-sm font-medium text-gray-400 mb-1">Subject</label>
+<input type="text" id="contact-subject" class="w-full bg-gray-800 border-none rounded text-white px-4 py-3 focus:ring-2 focus:ring-primary outline-none" required>
+</div>
+<div>
+<label for="contact-message" class="block text-sm font-medium text-gray-400 mb-1">Message</label>
+<textarea id="contact-message" rows="4" class="w-full bg-gray-800 border-none rounded text-white px-4 py-3 focus:ring-2 focus:ring-primary outline-none resize-none" required></textarea>
+</div>
+<button type="submit" class="w-full py-3 bg-primary text-white rounded-button hover:bg-opacity-90 transition-all font-medium">
+Send Message
+</button>
+</form>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="map" class="h-96 relative">
+<div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://public.readdy.ai/gen_page/map_placeholder_1280x720.png');"></div>
+<div class="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+<div class="text-center">
+<h3 class="text-2xl font-bold text-white mb-4">Find Us</h3>
+<button id="find-us-btn" class="px-6 py-3 bg-primary text-white rounded-button hover:bg-opacity-90 transition-all font-medium inline-flex items-center whitespace-nowrap">
+<i class="ri-map-pin-line mr-2"></i>
+Get Directions
+</button>
+</div>
+</div>
+</section>
+</main>
+<footer class="bg-gray-950 pt-16 pb-8">
+<div class="container mx-auto px-4">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+<div>
+<a href="#" class="logo text-3xl text-white font-bold mb-4 block">Pokyto's</a>
+<p class="text-gray-400 mb-6">Elevating culinary experiences through passion, innovation, and exceptional ingredients.</p>
+<div class="flex space-x-4">
+<a href="#" class="social-link text-gray-400 hover:text-primary transition-colors" data-platform="instagram">
+<div class="w-8 h-8 flex items-center justify-center">
+<i class="ri-instagram-line"></i>
+</div>
+</a>
+<a href="#" class="social-link text-gray-400 hover:text-primary transition-colors" data-platform="facebook">
+<div class="w-8 h-8 flex items-center justify-center">
+<i class="ri-facebook-line"></i>
+</div>
+</a>
+<a href="#" class="social-link text-gray-400 hover:text-primary transition-colors" data-platform="whatsapp">
+<div class="w-8 h-8 flex items-center justify-center">
+<i class="ri-whatsapp-line"></i>
+</div>
+</a>
+<a href="#" class="social-link text-gray-400 hover:text-primary transition-colors" data-platform="twitter">
+<div class="w-8 h-8 flex items-center justify-center">
+<i class="ri-twitter-x-line"></i>
+</div>
+</a>
+</div>
+</div>
+<div>
+<h4 class="text-lg font-bold mb-4">Quick Links</h4>
+<ul class="space-y-2">
+<li><a href="#home" class="text-gray-400 hover:text-primary transition-colors">Home</a></li>
+<li><a href="#about" class="text-gray-400 hover:text-primary transition-colors">About Us</a></li>
+<li><a href="#menu" class="text-gray-400 hover:text-primary transition-colors">Menu</a></li>
+<li><a href="#reservation" class="text-gray-400 hover:text-primary transition-colors">Reservations</a></li>
+<li><a href="#contact" class="text-gray-400 hover:text-primary transition-colors">Contact</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-lg font-bold mb-4">Contact Info</h4>
+<ul class="space-y-2">
+<li class="flex items-start">
+<div class="w-5 h-5 flex items-center justify-center mr-2 mt-0.5">
+<i class="ri-map-pin-line text-primary"></i>
+</div>
+<span class="text-gray-400">Osu Oxford Street, Accra, Ghana</span>
+</li>
+<li class="flex items-start">
+<div class="w-5 h-5 flex items-center justify-center mr-2 mt-0.5">
+<i class="ri-phone-line text-primary"></i>
+</div>
+<span class="text-gray-400">+233 XX XXX XXXX</span>
+</li>
+<li class="flex items-start">
+<div class="w-5 h-5 flex items-center justify-center mr-2 mt-0.5">
+<i class="ri-mail-line text-primary"></i>
+</div>
+<span class="text-gray-400">info@pokytos.com</span>
+</li>
+<li class="flex items-start">
+<div class="w-5 h-5 flex items-center justify-center mr-2 mt-0.5">
+<i class="ri-time-line text-primary"></i>
+</div>
+<span class="text-gray-400">Mon-Sat: 5:30 PM - 11:30 PM</span>
+</li>
+</ul>
+</div>
+<div>
+<h4 class="text-lg font-bold mb-4">Newsletter</h4>
+<p class="text-gray-400 mb-4">Subscribe to receive updates on special events and exclusive offers.</p>
+<form class="space-y-4">
+<div class="relative">
+<input type="email" placeholder="Your email address" class="w-full bg-gray-900 border-none rounded text-white pl-4 pr-12 py-3 focus:ring-2 focus:ring-primary outline-none" required>
+<button type="submit" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-primary hover:text-white transition-colors">
+<div class="w-8 h-8 flex items-center justify-center">
+<i class="ri-send-plane-line"></i>
+</div>
+</button>
+</div>
+</form>
+<div class="mt-4 flex items-center space-x-2">
+<div class="w-8 h-5 flex items-center justify-center">
+<i class="ri-visa-fill text-gray-400"></i>
+</div>
+<div class="w-8 h-5 flex items-center justify-center">
+<i class="ri-mastercard-fill text-gray-400"></i>
+</div>
+<div class="w-8 h-5 flex items-center justify-center">
+<i class="ri-paypal-fill text-gray-400"></i>
+</div>
+<div class="w-8 h-5 flex items-center justify-center">
+<i class="ri-apple-fill text-gray-400"></i>
+</div>
+</div>
+</div>
+</div>
+<div class="border-t border-gray-800 pt-8">
+<div class="flex flex-col md:flex-row justify-between items-center">
+<p class="text-gray-500 text-sm mb-4 md:mb-0">© 2025 Pokyto's Restaurant. All rights reserved.</p>
+<div class="flex space-x-6">
+<a href="#" class="text-gray-500 text-sm hover:text-primary transition-colors">Privacy Policy</a>
+<a href="#" class="text-gray-500 text-sm hover:text-primary transition-colors">Terms of Service</a>
+<a href="#" class="text-gray-500 text-sm hover:text-primary transition-colors">Sitemap</a>
+</div>
+</div>
+</div>
+</div>
+</footer>
+<div id="image-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+<div class="absolute inset-0 bg-black bg-opacity-90" id="modal-overlay"></div>
+<div class="relative max-w-4xl max-h-[90vh] overflow-hidden">
+<img id="modal-image" src="" alt="Gallery Image" class="max-w-full max-h-[90vh] object-contain">
+<button id="close-modal" class="absolute top-4 right-4 text-white hover:text-primary transition-colors">
+<div class="w-10 h-10 flex items-center justify-center">
+<i class="ri-close-line ri-2x"></i>
+</div>
+</button>
+</div>
+</div>
+<div id="back-to-top" class="fixed bottom-8 right-8 w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white cursor-pointer opacity-0 invisible transition-all duration-300 z-40">
+<i class="ri-arrow-up-line ri-lg"></i>
+</div>
+<script id="navigation-script">
+document.addEventListener('DOMContentLoaded', function() {
+try {
+const header = document.getElementById('header');
+const mobileMenuButton = document.getElementById('mobile-menu-button');
+const mobileMenu = document.getElementById('mobile-menu');
+const backToTop = document.getElementById('back-to-top');
+
+if (!header || !mobileMenuButton || !mobileMenu || !backToTop) {
+  console.warn('Some navigation elements not found');
+  return;
+}
+// Sticky header
+window.addEventListener('scroll', function() {
+if (window.scrollY > 50) {
+header.classList.add('bg-black', 'bg-opacity-95', 'shadow-lg');
+header.classList.remove('py-4');
+header.classList.add('py-2');
+if (window.scrollY > 300) {
+backToTop.classList.remove('opacity-0', 'invisible');
+backToTop.classList.add('opacity-100', 'visible');
+} else {
+backToTop.classList.add('opacity-0', 'invisible');
+backToTop.classList.remove('opacity-100', 'visible');
+}
+} else {
+header.classList.remove('bg-black', 'bg-opacity-95', 'shadow-lg');
+header.classList.add('py-4');
+header.classList.remove('py-2');
+backToTop.classList.add('opacity-0', 'invisible');
+backToTop.classList.remove('opacity-100', 'visible');
+}
+});
+// Mobile menu toggle
+mobileMenuButton.addEventListener('click', function() {
+mobileMenu.classList.toggle('hidden');
+});
+// Close mobile menu when clicking on a link
+const mobileLinks = mobileMenu.querySelectorAll('a');
+mobileLinks.forEach(link => {
+link.addEventListener('click', function() {
+mobileMenu.classList.add('hidden');
+});
+});
+// Smooth scrolling for navigation links
+const navLinks = document.querySelectorAll('a[href^="#"]');
+navLinks.forEach(link => {
+link.addEventListener('click', function(e) {
+e.preventDefault();
+const targetId = this.getAttribute('href');
+if (targetId === '#') return;
+const targetElement = document.querySelector(targetId);
+if (targetElement) {
+window.scrollTo({
+top: targetElement.offsetTop - 80,
+behavior: 'smooth'
+});
+}
+});
+});
+// Back to top button
+backToTop.addEventListener('click', function() {
+window.scrollTo({
+top: 0,
+behavior: 'smooth'
+});
+});
+// Active link highlighting
+const sections = document.querySelectorAll('section');
+window.addEventListener('scroll', function() {
+let current = '';
+sections.forEach(section => {
+const sectionTop = section.offsetTop;
+const sectionHeight = section.clientHeight;
+if (window.scrollY >= sectionTop - 100) {
+current = section.getAttribute('id');
+}
+});
+navLinks.forEach(link => {
+link.classList.remove('active');
+if (link.getAttribute('href') === `#${current}`) {
+link.classList.add('active');
+}
+});
+});
+});
+</script>
+<script id="cart-script">
+document.addEventListener('DOMContentLoaded', function() {
+try {
+const cartButton = document.getElementById('cart-button');
+const cartSidebar = document.getElementById('cart-sidebar');
+const closeCart = document.getElementById('close-cart');
+const cartItems = document.getElementById('cart-items');
+const cartCount = document.getElementById('cart-count');
+
+if (!cartButton || !cartSidebar || !closeCart || !cartItems || !cartCount) {
+  console.warn('Some cart elements not found');
+  return;
+}
+const cartSubtotal = document.getElementById('cart-subtotal');
+const checkoutButton = document.getElementById('checkout-button');
+const checkoutModal = document.getElementById('checkout-modal');
+const closeCheckout = document.getElementById('close-checkout');
+const checkoutOverlay = document.getElementById('checkout-overlay');
+const checkoutItems = document.getElementById('checkout-items');
+const checkoutSubtotal = document.getElementById('checkout-subtotal');
+const checkoutDelivery = document.getElementById('checkout-delivery');
+const checkoutTotal = document.getElementById('checkout-total');
+const orderTypeRadios = document.querySelectorAll('input[name="order-type"]');
+const deliveryDetails = document.getElementById('delivery-details');
+const useLocationButton = document.getElementById('use-location');
+const addressInput = document.getElementById('address');
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
+// Open cart sidebar
+cartButton.addEventListener('click', function() {
+cartSidebar.classList.remove('translate-x-full');
+document.body.style.overflow = 'hidden';
+});
+// Close cart sidebar
+closeCart.addEventListener('click', function() {
+cartSidebar.classList.add('translate-x-full');
+document.body.style.overflow = '';
+});
+// Add to cart buttons
+const addToCartButtons = document.querySelectorAll('.add-to-cart');
+addToCartButtons.forEach(button => {
+button.addEventListener('click', function() {
+const id = this.getAttribute('data-id');
+const name = this.getAttribute('data-name');
+const price = parseFloat(this.getAttribute('data-price'));
+const image = this.getAttribute('data-image');
+// Check if item already in cart
+const existingItem = cart.find(item => item.id === id);
+if (existingItem) {
+existingItem.quantity += 1;
+} else {
+cart.push({
+id,
+name,
+price,
+image,
+quantity: 1
+});
+}
+// Save to localStorage
+localStorage.setItem('cart', JSON.stringify(cart));
+// Update cart UI
+updateCart();
+// Show cart
+cartSidebar.classList.remove('translate-x-full');
+document.body.style.overflow = 'hidden';
+// Feedback animation
+this.innerHTML = 'Added to Cart!';
+this.classList.add('bg-primary');
+this.classList.remove('bg-gray-800', 'hover:bg-gray-700');
+setTimeout(() => {
+this.innerHTML = 'Add to Cart';
+this.classList.remove('bg-primary');
+this.classList.add('bg-gray-800', 'hover:bg-gray-700');
+}, 1500);
+});
+});
+// Update cart UI
+function updateCart() {
+// Update cart count
+const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+cartCount.textContent = totalItems;
+// Update cart items
+if (cart.length === 0) {
+cartItems.innerHTML = `
+<div class="empty-cart text-center py-10">
+<div class="w-16 h-16 mx-auto mb-4 text-gray-500">
+<i class="ri-shopping-cart-line ri-3x"></i>
+</div>
+<p class="text-gray-400">Your cart is empty</p>
+<button class="mt-4 px-6 py-2 bg-primary text-white rounded-button hover:bg-opacity-90 transition-all">Browse Menu</button>
+</div>
+`;
+} else {
+let itemsHTML = '';
+let subtotal = 0;
+cart.forEach(item => {
+const itemTotal = item.price * item.quantity;
+subtotal += itemTotal;
+itemsHTML += `
+<div class="flex items-start border-b border-gray-800 pb-4 mb-4 last:border-0 last:mb-0 last:pb-0">
+<div class="w-20 h-20 rounded overflow-hidden mr-4 flex-shrink-0">
+<img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover">
+</div>
+<div class="flex-1">
+<h4 class="text-white font-medium">${item.name}</h4>
+<div class="flex justify-between items-center mt-2">
+<span class="text-primary">$${item.price.toFixed(2)}</span>
+<div class="flex items-center">
+<button class="decrease-quantity w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white" data-id="${item.id}">
+<i class="ri-subtract-line"></i>
+</button>
+<span class="w-8 text-center">${item.quantity}</span>
+<button class="increase-quantity w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white" data-id="${item.id}">
+<i class="ri-add-line"></i>
+</button>
+</div>
+</div>
+</div>
+<button class="remove-item ml-2 text-gray-500 hover:text-primary" data-id="${item.id}">
+<div class="w-8 h-8 flex items-center justify-center">
+<i class="ri-close-line"></i>
+</div>
+</button>
+</div>
+`;
+});
+cartItems.innerHTML = itemsHTML;
+cartSubtotal.textContent = `$${subtotal.toFixed(2)}`;
+// Add event listeners to quantity buttons
+const decreaseButtons = cartItems.querySelectorAll('.decrease-quantity');
+const increaseButtons = cartItems.querySelectorAll('.increase-quantity');
+const removeButtons = cartItems.querySelectorAll('.remove-item');
+decreaseButtons.forEach(button => {
+button.addEventListener('click', function() {
+const id = this.getAttribute('data-id');
+const item = cart.find(item => item.id === id);
+if (item.quantity > 1) {
+item.quantity -= 1;
+} else {
+cart = cart.filter(item => item.id !== id);
+}
+localStorage.setItem('cart', JSON.stringify(cart));
+updateCart();
+});
+});
+increaseButtons.forEach(button => {
+button.addEventListener('click', function() {
+const id = this.getAttribute('data-id');
+const item = cart.find(item => item.id === id);
+item.quantity += 1;
+localStorage.setItem('cart', JSON.stringify(cart));
+updateCart();
+});
+});
+removeButtons.forEach(button => {
+button.addEventListener('click', function() {
+const id = this.getAttribute('data-id');
+cart = cart.filter(item => item.id !== id);
+localStorage.setItem('cart', JSON.stringify(cart));
+updateCart();
+});
+});
+}
+}
+// Initialize cart
+updateCart();
+// Checkout button
+checkoutButton.addEventListener('click', function() {
+if (cart.length === 0) return;
+cartSidebar.classList.add('translate-x-full');
+checkoutModal.classList.remove('hidden');
+// Populate checkout items
+let itemsHTML = '';
+let subtotal = 0;
+cart.forEach(item => {
+const itemTotal = item.price * item.quantity;
+subtotal += itemTotal;
+itemsHTML += `
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center">
+<span class="text-white">${item.name}</span>
+<span class="text-gray-500 mx-2">×</span>
+<span class="text-gray-400">${item.quantity}</span>
+</div>
+<span class="text-white">$${itemTotal.toFixed(2)}</span>
+</div>
+`;
+});
+checkoutItems.innerHTML = itemsHTML;
+checkoutSubtotal.textContent = `$${subtotal.toFixed(2)}`;
+// Calculate delivery fee
+const deliveryFee = 5.00;
+checkoutDelivery.textContent = `$${deliveryFee.toFixed(2)}`;
+// Calculate total
+const total = subtotal + deliveryFee;
+checkoutTotal.textContent = `$${total.toFixed(2)}`;
+});
+// Close checkout modal
+closeCheckout.addEventListener('click', function() {
+checkoutModal.classList.add('hidden');
+document.body.style.overflow = '';
+});
+checkoutOverlay.addEventListener('click', function() {
+checkoutModal.classList.add('hidden');
+document.body.style.overflow = '';
+});
+// Order type toggle
+orderTypeRadios.forEach(radio => {
+radio.addEventListener('change', function() {
+if (this.value === 'delivery') {
+deliveryDetails.classList.remove('hidden');
+} else {
+deliveryDetails.classList.add('hidden');
+}
+});
+});
+// Use current location
+useLocationButton.addEventListener('click', function() {
+if (navigator.geolocation) {
+navigator.geolocation.getCurrentPosition(position => {
+const latitude = position.coords.latitude;
+const longitude = position.coords.longitude;
+// Simulate reverse geocoding
+addressInput.value = `Location detected (${latitude.toFixed(4)}, ${longitude.toFixed(4)})`;
+});
+}
+});
+// Checkout form submission
+const checkoutForm = document.getElementById('checkout-form');
+checkoutForm.addEventListener('submit', function(e) {
+e.preventDefault();
+// Simulate form submission
+const submitButton = this.querySelector('button[type="submit"]');
+submitButton.innerHTML = '<i class="ri-loader-4-line animate-spin mr-2"></i> Processing...';
+submitButton.disabled = true;
+setTimeout(() => {
+// Clear cart
+cart = [];
+localStorage.setItem('cart', JSON.stringify(cart));
+updateCart();
+// Show success message
+checkoutModal.innerHTML = `
+<div class="absolute inset-0 bg-black bg-opacity-70"></div>
+<div class="relative bg-gray-900 rounded-lg w-full max-w-md p-8 text-center">
+<div class="w-20 h-20 mx-auto mb-6 text-primary">
+<i class="ri-check-line ri-3x"></i>
+</div>
+<h2 class="text-2xl font-bold text-white mb-4">Order Placed Successfully!</h2>
+<p class="text-gray-300 mb-6">Thank you for your order. We'll prepare your delicious meal right away.</p>
+<button id="close-success" class="px-8 py-3 bg-primary text-white rounded-button hover:bg-opacity-90 transition-all font-medium">
+Continue Shopping
+</button>
+</div>
+`;
+// Add event listener to close success message
+document.getElementById('close-success').addEventListener('click', function() {
+checkoutModal.classList.add('hidden');
+document.body.style.overflow = '';
+});
+}, 2000);
+});
+});
+</script>
+<script id="menu-tabs-script">
+document.addEventListener('DOMContentLoaded', function() {
+try {
+const tabButtons = document.querySelectorAll('.tab-button');
+const tabContents = document.querySelectorAll('.tab-content');
+
+if (!tabButtons.length || !tabContents.length) {
+  console.warn('Menu tab elements not found');
+  return;
+}
+// Show initial tab
+document.getElementById('food-tab').classList.remove('hidden');
+tabButtons.forEach(button => {
+button.addEventListener('click', function() {
+const tabId = this.getAttribute('data-tab');
+// Remove active class from all buttons
+tabButtons.forEach(btn => btn.classList.remove('active'));
+// Add active class to clicked button
+this.classList.add('active');
+// Hide all tab contents
+tabContents.forEach(content => content.classList.add('hidden'));
+// Show selected tab content with fade effect
+const selectedTab = document.getElementById(`${tabId}-tab`);
+selectedTab.classList.remove('hidden');
+selectedTab.style.opacity = '0';
+setTimeout(() => {
+selectedTab.style.opacity = '1';
+}, 50);
+});
+});
+// Load more buttons
+const loadMoreButtons = document.querySelectorAll('.load-more');
+loadMoreButtons.forEach(button => {
+button.addEventListener('click', function() {
+// This would typically load more items via AJAX
+// For demo purposes, we'll just show a message
+this.innerHTML = 'Loading...';
+setTimeout(() => {
+this.innerHTML = 'No More Items';
+this.disabled = true;
+this.classList.add('opacity-50', 'cursor-not-allowed');
+}, 1500);
+});
+});
+});
+</script>
+<script id="gallery-script">
+document.addEventListener('DOMContentLoaded', function() {
+try {
+const galleryItems = document.querySelectorAll('.gallery-item');
+const imageModal = document.getElementById('image-modal');
+const modalImage = document.getElementById('modal-image');
+const closeModal = document.getElementById('close-modal');
+const modalOverlay = document.getElementById('modal-overlay');
+
+if (!imageModal || !modalImage || !closeModal || !modalOverlay) {
+  console.warn('Gallery modal elements not found');
+  return;
+}
+galleryItems.forEach(item => {
+const viewButton = item.querySelector('.view-image');
+const image = item.querySelector('img');
+viewButton.addEventListener('click', function() {
+modalImage.src = image.src;
+imageModal.classList.remove('hidden');
+document.body.style.overflow = 'hidden';
+});
+});
+closeModal.addEventListener('click', function() {
+imageModal.classList.add('hidden');
+document.body.style.overflow = '';
+});
+modalOverlay.addEventListener('click', function() {
+imageModal.classList.add('hidden');
+document.body.style.overflow = '';
+});
+});
+</script>
+<script id="counter-script">
+document.addEventListener('DOMContentLoaded', function() {
+try {
+const counters = document.querySelectorAll('.counter-value');
+
+if (!counters.length) {
+  console.warn('Counter elements not found');
+  return;
+}
+const startCounters = () => {
+counters.forEach(counter => {
+const target = parseInt(counter.getAttribute('data-target'));
+const duration = 2000; // 2 seconds
+const step = target / (duration / 16); // 60fps
+let current = 0;
+const updateCounter = () => {
+current += step;
+if (current < target) {
+counter.textContent = Math.ceil(current).toLocaleString();
+requestAnimationFrame(updateCounter);
+} else {
+counter.textContent = target.toLocaleString();
+}
+};
+updateCounter();
+});
+};
+// Use Intersection Observer to trigger counters when visible
+const observer = new IntersectionObserver((entries) => {
+entries.forEach(entry => {
+if (entry.isIntersecting) {
+startCounters();
+observer.unobserve(entry.target);
+}
+});
+}, { threshold: 0.5 });
+const counterSection = document.querySelector('.counter-value').closest('.grid');
+observer.observe(counterSection);
+});
+</script>
+<script id="animation-script">
+document.addEventListener('DOMContentLoaded', function() {
+try {
+if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+  console.warn('GSAP or ScrollTrigger not loaded');
+  return;
+}
+
+// Initialize GSAP animations
+gsap.registerPlugin(ScrollTrigger);
+// Hero section animations
+gsap.from('.hero-bg', {
+duration: 1.5,
+scale: 1.1,
+opacity: 0.5,
+ease: 'power2.out'
+});
+gsap.from('#home h1', {
+duration: 1,
+y: 50,
+opacity: 0,
+delay: 0.5,
+ease: 'power3.out'
+});
+gsap.from('#home p', {
+duration: 1,
+y: 30,
+opacity: 0,
+delay: 0.8,
+ease: 'power3.out'
+});
+gsap.from('#home .flex', {
+duration: 1,
+y: 20,
+opacity: 0,
+delay: 1.1,
+ease: 'power3.out'
+});
+// Featured items animations
+gsap.from('.floating-card', {
+scrollTrigger: {
+trigger: '#featured',
+start: 'top 80%'
+},
+duration: 0.8,
+y: 50,
+opacity: 0,
+stagger: 0.2,
+ease: 'power3.out'
+});
+// About section animations
+gsap.from('#about h2', {
+scrollTrigger: {
+trigger: '#about',
+start: 'top 80%'
+},
+duration: 0.8,
+y: 30,
+opacity: 0,
+ease: 'power3.out'
+});
+gsap.from('#about p', {
+scrollTrigger: {
+trigger: '#about',
+start: 'top 80%'
+},
+duration: 0.8,
+y: 30,
+opacity: 0,
+delay: 0.2,
+ease: 'power3.out'
+});
+gsap.from('.timeline-item', {
+scrollTrigger: {
+trigger: '.timeline-item',
+start: 'top 80%'
+},
+duration: 0.8,
+x: -30,
+opacity: 0,
+stagger: 0.2,
+ease: 'power3.out'
+});
+gsap.from('.gallery-item', {
+scrollTrigger: {
+trigger: '.gallery-item',
+start: 'top 80%'
+},
+duration: 0.8,
+scale: 0.9,
+opacity: 0,
+stagger: 0.15,
+ease: 'power3.out'
+});
+// Menu section animations
+gsap.from('#menu h2', {
+scrollTrigger: {
+trigger: '#menu',
+start: 'top 80%'
+},
+duration: 0.8,
+y: 30,
+opacity: 0,
+ease: 'power3.out'
+});
+gsap.from('.tab-button', {
+scrollTrigger: {
+trigger: '.tab-button',
+start: 'top 80%'
+},
+duration: 0.8,
+y: 20,
+opacity: 0,
+stagger: 0.1,
+ease: 'power3.out'
+});
+gsap.from('.menu-item', {
+scrollTrigger: {
+trigger: '.menu-item',
+start: 'top 80%'
+},
+duration: 0.8,
+y: 30,
+opacity: 0,
+stagger: 0.1,
+ease: 'power3.out'
+});
+// Contact section animations
+gsap.from('#contact h2', {
+scrollTrigger: {
+trigger: '#contact',
+start: 'top 80%'
+},
+duration: 0.8,
+y: 30,
+opacity: 0,
+ease: 'power3.out'
+});
+gsap.from('.pulse-icon', {
+scrollTrigger: {
+trigger: '.pulse-icon',
+start: 'top 80%'
+},
+duration: 0.8,
+scale: 0.5,
+opacity: 0,
+stagger: 0.2,
+ease: 'back.out(1.7)'
+});
+// Floating card effect
+const cards = document.querySelectorAll('.floating-card');
+cards.forEach(card => {
+card.addEventListener('mousemove', function(e) {
+const rect = this.getBoundingClientRect();
+const x = e.clientX - rect.left;
+const y = e.clientY - rect.top;
+const centerX = rect.width / 2;
+const centerY = rect.height / 2;
+const rotateX = (y - centerY) / 20;
+const rotateY = (centerX - x) / 20;
+this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
+});
+card.addEventListener('mouseleave', function() {
+this.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
+});
+});
+
+// Menu Choice Modal Functions
+function showMenuChoice() {
+    const modal = document.getElementById('menu-choice-modal');
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        modal.querySelector('.relative').classList.remove('scale-95');
+        modal.querySelector('.relative').classList.add('scale-100');
+    }, 10);
+}
+
+function closeMenuChoice() {
+    const modal = document.getElementById('menu-choice-modal');
+    modal.querySelector('.relative').classList.remove('scale-100');
+    modal.querySelector('.relative').classList.add('scale-95');
+    setTimeout(() => {
+        modal.classList.add('hidden');
+    }, 300);
+}
+
+function redirectToMenu(type) {
+    closeMenuChoice();
+    setTimeout(() => {
+        if (type === 'food') {
+            window.location.href = 'food-menu.html';
+        } else if (type === 'drinks') {
+            window.location.href = 'drinks-menu.html';
+        }
+    }, 300);
+}
+
+// Enhanced Add to Cart Animation
+function showAddToCartAlert(itemName) {
+    // Create alert element
+    const alert = document.createElement('div');
+    alert.className = 'fixed top-20 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300';
+    alert.innerHTML = `
+        <div class="flex items-center space-x-3">
+            <i class="ri-check-line ri-lg"></i>
+            <span>${itemName} added to cart!</span>
+        </div>
+    `;
+    
+    document.body.appendChild(alert);
+    
+    // Animate in
+    setTimeout(() => {
+        alert.classList.remove('translate-x-full');
+    }, 10);
+    
+    // Animate out and remove
+    setTimeout(() => {
+        alert.classList.add('translate-x-full');
+        setTimeout(() => {
+            document.body.removeChild(alert);
+        }, 300);
+    }, 3000);
+}
+
+// Update all existing add-to-cart buttons
+const oldButtons = document.querySelectorAll('.add-to-cart');
+oldButtons.forEach(button => {
+    button.className = 'add-to-cart-btn w-full py-2 bg-primary hover:bg-opacity-90 text-white rounded-button transition-all font-medium';
+});
+
+// Add click handlers for all add-to-cart buttons
+const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+addToCartButtons.forEach(button => {
+    button.addEventListener('click', function() {
+        const itemName = this.getAttribute('data-name');
+        const itemPrice = parseFloat(this.getAttribute('data-price'));
+        const itemId = this.getAttribute('data-id');
+        const itemImage = this.getAttribute('data-image');
+        
+        // Add to cart logic here (you can expand this)
+        addToCart({
+            id: itemId,
+            name: itemName,
+            price: itemPrice,
+            image: itemImage,
+            quantity: 1
+        });
+        
+        // Show success animation
+        showAddToCartAlert(itemName);
+        
+        // Button animation
+        this.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            this.style.transform = 'scale(1)';
+        }, 150);
+    });
+});
+
+// Basic cart functionality (expand as needed)
+let cart = [];
+
+function addToCart(item) {
+    const existingItem = cart.find(cartItem => cartItem.id === item.id);
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        cart.push(item);
+    }
+    updateCartCount();
+}
+
+function updateCartCount() {
+    const cartCount = document.getElementById('cart-count');
+    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+    cartCount.textContent = totalItems;
+}
+
+
+});
+</script>
+<script src="js/main.js"></script>
+</body>
+</html>

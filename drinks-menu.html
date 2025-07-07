@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drinks Menu - Pokyto's Restaurant</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>tailwind.config={theme:{extend:{colors:{primary:'#ff6b6b',secondary:'#4ecdc4'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/ScrollTrigger.min.js"></script>
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/dropdown.css">
+</head>
+<body class="custom-scrollbar">
+<header class="fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-black bg-opacity-95" id="header">
+<div class="container mx-auto px-4 py-4 flex items-center justify-between">
+<div class="flex items-center">
+<a href="index.html" class="logo text-3xl text-white font-bold">Pokyto's</a>
+</div>
+<nav class="hidden md:flex items-center space-x-8">
+<a href="index.html#home" class="nav-link text-white hover:text-primary">Home</a>
+<a href="index.html#about" class="nav-link text-white hover:text-primary">About</a>
+<div class="dropdown">
+<a href="#menu" class="nav-link text-white hover:text-primary">Menu</a>
+<div class="dropdown-menu">
+<a href="food-menu.html" class="dropdown-item">
+<i class="ri-restaurant-line mr-2"></i>Food Menu
+</a>
+<a href="drinks-menu.html" class="dropdown-item">
+<i class="ri-cup-line mr-2"></i>Drinks Menu
+</a>
+</div>
+</div>
+<a href="index.html#contact" class="nav-link text-white hover:text-primary">Contact</a>
+</nav>
+<div class="flex items-center space-x-4">
+<button id="cart-button" class="relative text-white hover:text-primary transition-colors">
+<div class="w-10 h-10 flex items-center justify-center">
+<i class="ri-shopping-cart-2-line ri-lg"></i>
+</div>
+<span id="cart-count" class="absolute -top-1 -right-1 bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+</button>
+<button id="mobile-menu-button" class="md:hidden text-white hover:text-primary transition-colors">
+<div class="w-10 h-10 flex items-center justify-center">
+<i class="ri-menu-line ri-lg"></i>
+</div>
+</button>
+</div>
+</div>
+<div id="mobile-menu" class="md:hidden bg-black bg-opacity-95 absolute w-full left-0 top-full py-4 px-4 hidden z-40 backdrop-blur-sm border-t border-gray-800">
+<nav class="flex flex-col space-y-4">
+<a href="index.html#home" class="nav-link text-white hover:text-primary py-2">Home</a>
+<a href="index.html#about" class="nav-link text-white hover:text-primary py-2">About</a>
+<a href="food-menu.html" class="nav-link text-white hover:text-primary py-2">Food Menu</a>
+<a href="drinks-menu.html" class="nav-link text-white hover:text-primary py-2">Drinks Menu</a>
+<a href="index.html#contact" class="nav-link text-white hover:text-primary py-2">Contact</a>
+</nav>
+</div>
+</header>
+
+<!-- Cart Sidebar -->
+<div id="cart-sidebar" class="fixed top-0 right-0 w-full md:w-96 h-full bg-black bg-opacity-95 z-50 transform translate-x-full transition-transform duration-300 shadow-2xl">
+<div class="flex flex-col h-full">
+<div class="p-6 border-b border-gray-800">
+<div class="flex items-center justify-between">
+<h2 class="text-2xl font-bold text-white">Your Cart</h2>
+<button id="close-cart" class="text-white hover:text-primary">
+<div class="w-8 h-8 flex items-center justify-center">
+<i class="ri-close-line ri-lg"></i>
+</div>
+</button>
+</div>
+</div>
+<div id="cart-items" class="flex-1 overflow-y-auto p-6 custom-scrollbar">
+<div class="empty-cart text-center py-10">
+<div class="w-16 h-16 mx-auto mb-4 text-gray-500">
+<i class="ri-shopping-cart-line ri-3x"></i>
+</div>
+<p class="text-gray-400">Your cart is empty</p>
+<button onclick="showMenuChoice()" class="mt-4 px-6 py-2 bg-primary text-white rounded-button hover:bg-opacity-90 transition-all">Browse Menu</button>
+</div>
+</div>
+<div class="p-6 border-t border-gray-800">
+<div class="flex justify-between mb-4">
+<span class="text-gray-400">Subtotal</span>
+<span id="cart-subtotal" class="text-white font-medium">₵0.00</span>
+</div>
+<button id="checkout-button" class="w-full py-3 bg-primary text-white rounded-button hover:bg-opacity-90 transition-all font-medium">
+Proceed to Checkout
+</button>
+</div>
+</div>
+</div>
+
+<!-- Checkout Modal -->
+<div id="checkout-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+<div class="absolute inset-0 bg-black bg-opacity-70" id="checkout-overlay"></div>
+<div class="relative bg-gray-900 rounded-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto custom-scrollbar mx-4">
+<div class="p-6 border-b border-gray-800">
+<div class="flex items-center justify-between">
+<h2 class="text-2xl font-bold text-white">Complete Your Order</h2>
+<button id="close-checkout" class="text-white hover:text-primary">
+<div class="w-8 h-8 flex items-center justify-center">
+<i class="ri-close-line ri-lg"></i>
+</div>
+</button>
+</div>
+</div>
+<div class="p-6">
+<div class="mb-8">
+<h3 class="text-xl font-medium text-white mb-4">Order Summary</h3>
+<div id="checkout-items" class="space-y-4 mb-4">
+<!-- Checkout items will be dynamically added here -->
+</div>
+<div class="pt-4 border-t border-gray-800">
+<div class="flex justify-between mb-2">
+<span class="text-gray-400">Subtotal</span>
+<span id="checkout-subtotal" class="text-white">₵0.00</span>
+</div>
+<div class="flex justify-between mb-2">
+<span class="text-gray-400">Delivery Fee</span>
+<span id="checkout-delivery" class="text-white">₵0.00</span>
+</div>
+<div class="flex justify-between font-medium">
+<span class="text-white">Total</span>
+<span id="checkout-total" class="text-primary text-lg">₵0.00</span>
+</div>
+</div>
+</div>
+<form id="checkout-form" class="space-y-6">
+<h3 class="text-xl font-medium text-white">Customer Information</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div>
+<label for="name" class="block text-sm font-medium text-gray-400 mb-1">Full Name</label>
+<input type="text" id="name" name="name" class="w-full bg-gray-800 border-none rounded text-white px-4 py-3 focus:ring-2 focus:ring-primary outline-none" required>
+</div>
+<div>
+<label for="phone" class="block text-sm font-medium text-gray-400 mb-1">Phone Number</label>
+<input type="tel" id="phone" name="phone" class="w-full bg-gray-800 border-none rounded text-white px-4 py-3 focus:ring-2 focus:ring-primary outline-none" required>
+</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-400 mb-3">Order Type</label>
+<div class="flex space-x-6">
+<label class="custom-radio">
+<input type="radio" name="order-type" value="pickup" checked>
+<span class="radio-mark mr-2"></span>
+<span>Pickup</span>
+</label>
+<label class="custom-radio">
+<input type="radio" name="order-type" value="delivery">
+<span class="radio-mark mr-2"></span>
+<span>Delivery</span>
+</label>
+</div>
+</div>
+<div id="delivery-details" class="hidden">
+<div class="mb-4">
+<label for="address" class="block text-sm font-medium text-gray-400 mb-1">Delivery Address</label>
+<input type="text" id="address" name="address" class="w-full bg-gray-800 border-none rounded text-white px-4 py-3 focus:ring-2 focus:ring-primary outline-none">
+</div>
+<div class="flex items-center space-x-2">
+<button type="button" id="use-location" class="flex items-center text-primary hover:text-white transition-colors">
+<div class="w-5 h-5 flex items-center justify-center mr-1">
+<i class="ri-map-pin-line"></i>
+</div>
+<span>Use my current location</span>
+</button>
+</div>
+</div>
+<div>
+<label for="notes" class="block text-sm font-medium text-gray-400 mb-1">Special Instructions (Optional)</label>
+<textarea id="notes" name="notes" rows="3" class="w-full bg-gray-800 border-none rounded text-white px-4 py-3 focus:ring-2 focus:ring-primary outline-none resize-none"></textarea>
+</div>
+<button type="submit" class="w-full py-4 bg-primary text-white rounded-button hover:bg-opacity-90 transition-all font-medium">
+Place Order
+</button>
+</form>
+</div>
+</div>
+</div>
+
+<main class="pt-20">
+<!-- Hero Section -->
+<section class="py-20 bg-gradient-to-r from-gray-900 to-black">
+<div class="container mx-auto px-4 text-center">
+<h1 class="text-4xl md:text-6xl font-bold mb-6 gradient-text">Drinks Menu</h1>
+<p class="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
+Explore our curated selection of premium wines, craft cocktails, and artisanal beverages from around the world.
+</p>
+</div>
+</section>
+
+<!-- Menu Categories -->
+<section class="py-16 bg-gray-950">
+<div class="container mx-auto px-4">
+<div class="flex flex-wrap justify-center gap-4 mb-12">
+<button class="tab-button active px-6 py-3 rounded-button transition-all" data-category="all">All Drinks</button>
+<button class="tab-button px-6 py-3 rounded-button transition-all" data-category="cocktails">Cocktails</button>
+<button class="tab-button px-6 py-3 rounded-button transition-all" data-category="wines">Wines</button>
+<button class="tab-button px-6 py-3 rounded-button transition-all" data-category="spirits">Spirits</button>
+<button class="tab-button px-6 py-3 rounded-button transition-all" data-category="non-alcoholic">Non-Alcoholic</button>
+</div>
+
+<!-- Menu Items Grid -->
+<div id="menu-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+<!-- Cocktails -->
+<div class="menu-item-enhanced" data-category="cocktails">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=classic%20old%20fashioned%20cocktail%20with%20orange%20peel%20and%20cherry%2C%20professional%20drink%20photography&width=600&height=400&seq=cocktail1&orientation=landscape" alt="Old Fashioned" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Old Fashioned</h3>
+<span class="text-primary font-medium">?16</span>
+</div>
+<p class="text-gray-400 mb-4">Premium bourbon, sugar, bitters, orange peel.</p>
+<button class="add-to-cart-btn w-full" data-id="drink1" data-name="Old Fashioned" data-price="16" data-image="https://readdy.ai/api/search-image?query=classic%20old%20fashioned%20cocktail%20with%20orange%20peel%20and%20cherry%2C%20professional%20drink%20photography&width=600&height=400&seq=cocktail1&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="cocktails">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=negroni%20cocktail%20with%20orange%20slice%20garnish%2C%20professional%20drink%20photography&width=600&height=400&seq=cocktail2&orientation=landscape" alt="Negroni" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Negroni</h3>
+<span class="text-primary font-medium">?14</span>
+</div>
+<p class="text-gray-400 mb-4">Gin, Campari, sweet vermouth, orange twist.</p>
+<button class="add-to-cart-btn w-full" data-id="drink2" data-name="Negroni" data-price="14" data-image="https://readdy.ai/api/search-image?query=negroni%20cocktail%20with%20orange%20slice%20garnish%2C%20professional%20drink%20photography&width=600&height=400&seq=cocktail2&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="cocktails">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=manhattan%20cocktail%20with%20cherry%20garnish%20in%20coupe%20glass%2C%20professional%20drink%20photography&width=600&height=400&seq=cocktail3&orientation=landscape" alt="Manhattan" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Manhattan</h3>
+<span class="text-primary font-medium">?15</span>
+</div>
+<p class="text-gray-400 mb-4">Rye whiskey, sweet vermouth, bitters, cherry.</p>
+<button class="add-to-cart-btn w-full" data-id="drink3" data-name="Manhattan" data-price="15" data-image="https://readdy.ai/api/search-image?query=manhattan%20cocktail%20with%20cherry%20garnish%20in%20coupe%20glass%2C%20professional%20drink%20photography&width=600&height=400&seq=cocktail3&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="cocktails">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=martini%20cocktail%20with%20olive%20garnish%20in%20martini%20glass%2C%20professional%20drink%20photography&width=600&height=400&seq=cocktail4&orientation=landscape" alt="Classic Martini" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Classic Martini</h3>
+<span class="text-primary font-medium">?17</span>
+</div>
+<p class="text-gray-400 mb-4">Premium gin or vodka, dry vermouth, olive or lemon twist.</p>
+<button class="add-to-cart-btn w-full" data-id="drink4" data-name="Classic Martini" data-price="17" data-image="https://readdy.ai/api/search-image?query=martini%20cocktail%20with%20olive%20garnish%20in%20martini%20glass%2C%20professional%20drink%20photography&width=600&height=400&seq=cocktail4&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="cocktails">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=espresso%20martini%20with%20coffee%20beans%20garnish%2C%20professional%20drink%20photography&width=600&height=400&seq=cocktail5&orientation=landscape" alt="Espresso Martini" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Espresso Martini</h3>
+<span class="text-primary font-medium">?18</span>
+</div>
+<p class="text-gray-400 mb-4">Vodka, coffee liqueur, fresh espresso, coffee beans.</p>
+<button class="add-to-cart-btn w-full" data-id="drink5" data-name="Espresso Martini" data-price="18" data-image="https://readdy.ai/api/search-image?query=espresso%20martini%20with%20coffee%20beans%20garnish%2C%20professional%20drink%20photography&width=600&height=400&seq=cocktail5&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="cocktails">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=whiskey%20sour%20cocktail%20with%20lemon%20and%20cherry%20garnish%2C%20professional%20drink%20photography&width=600&height=400&seq=cocktail6&orientation=landscape" alt="Whiskey Sour" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Whiskey Sour</h3>
+<span class="text-primary font-medium">?13</span>
+</div>
+<p class="text-gray-400 mb-4">Bourbon, lemon juice, simple syrup, egg white, cherry.</p>
+<button class="add-to-cart-btn w-full" data-id="drink6" data-name="Whiskey Sour" data-price="13" data-image="https://readdy.ai/api/search-image?query=whiskey%20sour%20cocktail%20with%20lemon%20and%20cherry%20garnish%2C%20professional%20drink%20photography&width=600&height=400&seq=cocktail6&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="cocktails">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=mojito%20cocktail%20with%20mint%20and%20lime%20garnish%2C%20professional%20drink%20photography&width=600&height=400&seq=cocktail7&orientation=landscape" alt="Mojito" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Mojito</h3>
+<span class="text-primary font-medium">?12</span>
+</div>
+<p class="text-gray-400 mb-4">White rum, mint, lime, sugar, soda water.</p>
+<button class="add-to-cart-btn w-full" data-id="drink7" data-name="Mojito" data-price="12" data-image="https://readdy.ai/api/search-image?query=mojito%20cocktail%20with%20mint%20and%20lime%20garnish%2C%20professional%20drink%20photography&width=600&height=400&seq=cocktail7&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="cocktails">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=cosmopolitan%20cocktail%20with%20lime%20wheel%20garnish%2C%20professional%20drink%20photography&width=600&height=400&seq=cocktail8&orientation=landscape" alt="Cosmopolitan" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Cosmopolitan</h3>
+<span class="text-primary font-medium">?14</span>
+</div>
+<p class="text-gray-400 mb-4">Vodka, cranberry juice, lime juice, triple sec.</p>
+<button class="add-to-cart-btn w-full" data-id="drink8" data-name="Cosmopolitan" data-price="14" data-image="https://readdy.ai/api/search-image?query=cosmopolitan%20cocktail%20with%20lime%20wheel%20garnish%2C%20professional%20drink%20photography&width=600&height=400&seq=cocktail8&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<!-- Wines -->
+<div class="menu-item-enhanced" data-category="wines">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=dom%20perignon%20champagne%20bottle%20and%20glass%2C%20professional%20wine%20photography&width=600&height=400&seq=wine1&orientation=landscape" alt="Dom Pérignon" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Dom Pérignon 2012</h3>
+<span class="text-primary font-medium">?350</span>
+</div>
+<p class="text-gray-400 mb-4">Prestigious champagne with complex flavors and elegant bubbles.</p>
+<button class="add-to-cart-btn w-full" data-id="drink9" data-name="Dom Pérignon 2012" data-price="350" data-image="https://readdy.ai/api/search-image?query=dom%20perignon%20champagne%20bottle%20and%20glass%2C%20professional%20wine%20photography&width=600&height=400&seq=wine1&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="wines">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=caymus%20cabernet%20sauvignon%20wine%20bottle%20and%20glass%2C%20professional%20wine%20photography&width=600&height=400&seq=wine2&orientation=landscape" alt="Caymus Cabernet" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Caymus Cabernet Sauvignon</h3>
+<span class="text-primary font-medium">?85</span>
+</div>
+<p class="text-gray-400 mb-4">Rich Napa Valley Cabernet with dark fruit and oak notes.</p>
+<button class="add-to-cart-btn w-full" data-id="drink10" data-name="Caymus Cabernet Sauvignon" data-price="85" data-image="https://readdy.ai/api/search-image?query=caymus%20cabernet%20sauvignon%20wine%20bottle%20and%20glass%2C%20professional%20wine%20photography&width=600&height=400&seq=wine2&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="wines">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=opus%20one%20wine%20bottle%20and%20glass%2C%20professional%20wine%20photography&width=600&height=400&seq=wine3&orientation=landscape" alt="Opus One" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Opus One 2018</h3>
+<span class="text-primary font-medium">?450</span>
+</div>
+<p class="text-gray-400 mb-4">Legendary Bordeaux-style blend from Napa Valley.</p>
+<button class="add-to-cart-btn w-full" data-id="drink11" data-name="Opus One 2018" data-price="450" data-image="https://readdy.ai/api/search-image?query=opus%20one%20wine%20bottle%20and%20glass%2C%20professional%20wine%20photography&width=600&height=400&seq=wine3&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="wines">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=chablis%20white%20wine%20bottle%20and%20glass%2C%20professional%20wine%20photography&width=600&height=400&seq=wine4&orientation=landscape" alt="Chablis Premier Cru" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Chablis Premier Cru</h3>
+<span class="text-primary font-medium">?65</span>
+</div>
+<p class="text-gray-400 mb-4">Crisp Burgundian Chardonnay with mineral complexity.</p>
+<button class="add-to-cart-btn w-full" data-id="drink12" data-name="Chablis Premier Cru" data-price="65" data-image="https://readdy.ai/api/search-image?query=chablis%20white%20wine%20bottle%20and%20glass%2C%20professional%20wine%20photography&width=600&height=400&seq=wine4&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="wines">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=barolo%20wine%20bottle%20and%20glass%2C%20professional%20wine%20photography&width=600&height=400&seq=wine5&orientation=landscape" alt="Barolo" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Barolo DOCG 2017</h3>
+<span class="text-primary font-medium">?120</span>
+</div>
+<p class="text-gray-400 mb-4">Noble Italian red wine with intense flavors and tannins.</p>
+<button class="add-to-cart-btn w-full" data-id="drink13" data-name="Barolo DOCG 2017" data-price="120" data-image="https://readdy.ai/api/search-image?query=barolo%20wine%20bottle%20and%20glass%2C%20professional%20wine%20photography&width=600&height=400&seq=wine5&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="wines">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=sancerre%20white%20wine%20bottle%20and%20glass%2C%20professional%20wine%20photography&width=600&height=400&seq=wine6&orientation=landscape" alt="Sancerre" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Sancerre 2021</h3>
+<span class="text-primary font-medium">?55</span>
+</div>
+<p class="text-gray-400 mb-4">Elegant Loire Valley Sauvignon Blanc with citrus notes.</p>
+<button class="add-to-cart-btn w-full" data-id="drink14" data-name="Sancerre 2021" data-price="55" data-image="https://readdy.ai/api/search-image?query=sancerre%20white%20wine%20bottle%20and%20glass%2C%20professional%20wine%20photography&width=600&height=400&seq=wine6&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="wines">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=rioja%20reserva%20wine%20bottle%20and%20glass%2C%20professional%20wine%20photography&width=600&height=400&seq=wine7&orientation=landscape" alt="Rioja Reserva" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Rioja Reserva 2016</h3>
+<span class="text-primary font-medium">?45</span>
+</div>
+<p class="text-gray-400 mb-4">Spanish Tempranillo with vanilla and spice from oak aging.</p>
+<button class="add-to-cart-btn w-full" data-id="drink15" data-name="Rioja Reserva 2016" data-price="45" data-image="https://readdy.ai/api/search-image?query=rioja%20reserva%20wine%20bottle%20and%20glass%2C%20professional%20wine%20photography&width=600&height=400&seq=wine7&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="wines">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=riesling%20wine%20bottle%20and%20glass%2C%20professional%20wine%20photography&width=600&height=400&seq=wine8&orientation=landscape" alt="German Riesling" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">German Riesling Kabinett</h3>
+<span class="text-primary font-medium">?38</span>
+</div>
+<p class="text-gray-400 mb-4">Delicate German white with floral aromas and crisp acidity.</p>
+<button class="add-to-cart-btn w-full" data-id="drink16" data-name="German Riesling Kabinett" data-price="38" data-image="https://readdy.ai/api/search-image?query=riesling%20wine%20bottle%20and%20glass%2C%20professional%20wine%20photography&width=600&height=400&seq=wine8&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<!-- Spirits -->
+<div class="menu-item-enhanced" data-category="spirits">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=macallan%2025%20year%20whisky%20bottle%20and%20glass%2C%20professional%20spirits%20photography&width=600&height=400&seq=spirit1&orientation=landscape" alt="Macallan 25" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Macallan 25 Year</h3>
+<span class="text-primary font-medium">?180</span>
+</div>
+<p class="text-gray-400 mb-4">Exceptional aged Scotch whisky with rich sherry notes.</p>
+<button class="add-to-cart-btn w-full" data-id="drink17" data-name="Macallan 25 Year" data-price="180" data-image="https://readdy.ai/api/search-image?query=macallan%2025%20year%20whisky%20bottle%20and%20glass%2C%20professional%20spirits%20photography&width=600&height=400&seq=spirit1&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="spirits">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=hennessy%20paradis%20cognac%20bottle%20and%20snifter%2C%20professional%20spirits%20photography&width=600&height=400&seq=spirit2&orientation=landscape" alt="Hennessy Paradis" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Hennessy Paradis</h3>
+<span class="text-primary font-medium">?220</span>
+</div>
+<p class="text-gray-400 mb-4">Premium cognac blend with exceptional smoothness.</p>
+<button class="add-to-cart-btn w-full" data-id="drink18" data-name="Hennessy Paradis" data-price="220" data-image="https://readdy.ai/api/search-image?query=hennessy%20paradis%20cognac%20bottle%20and%20snifter%2C%20professional%20spirits%20photography&width=600&height=400&seq=spirit2&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="spirits">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=grey%20goose%20vodka%20bottle%20and%20glass%2C%20professional%20spirits%20photography&width=600&height=400&seq=spirit3&orientation=landscape" alt="Grey Goose" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Grey Goose Vodka</h3>
+<span class="text-primary font-medium">?18</span>
+</div>
+<p class="text-gray-400 mb-4">Premium French vodka with smooth, clean finish.</p>
+<button class="add-to-cart-btn w-full" data-id="drink19" data-name="Grey Goose Vodka" data-price="18" data-image="https://readdy.ai/api/search-image?query=grey%20goose%20vodka%20bottle%20and%20glass%2C%20professional%20spirits%20photography&width=600&height=400&seq=spirit3&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="spirits">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=don%20julio%201942%20tequila%20bottle%20and%20glass%2C%20professional%20spirits%20photography&width=600&height=400&seq=spirit4&orientation=landscape" alt="Don Julio 1942" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Don Julio 1942</h3>
+<span class="text-primary font-medium">?85</span>
+</div>
+<p class="text-gray-400 mb-4">Ultra-premium añejo tequila with complex flavors.</p>
+<button class="add-to-cart-btn w-full" data-id="drink20" data-name="Don Julio 1942" data-price="85" data-image="https://readdy.ai/api/search-image?query=don%20julio%201942%20tequila%20bottle%20and%20glass%2C%20professional%20spirits%20photography&width=600&height=400&seq=spirit4&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="spirits">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=bombay%20sapphire%20gin%20bottle%20and%20glass%2C%20professional%20spirits%20photography&width=600&height=400&seq=spirit5&orientation=landscape" alt="Bombay Sapphire" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Bombay Sapphire Gin</h3>
+<span class="text-primary font-medium">?16</span>
+</div>
+<p class="text-gray-400 mb-4">Premium London dry gin with botanical complexity.</p>
+<button class="add-to-cart-btn w-full" data-id="drink21" data-name="Bombay Sapphire Gin" data-price="16" data-image="https://readdy.ai/api/search-image?query=bombay%20sapphire%20gin%20bottle%20and%20glass%2C%20professional%20spirits%20photography&width=600&height=400&seq=spirit5&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="spirits">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=bacardi%20rum%20bottle%20and%20glass%2C%20professional%20spirits%20photography&width=600&height=400&seq=spirit6&orientation=landscape" alt="Bacardi Reserva Limitada" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Bacardi Reserva Limitada</h3>
+<span class="text-primary font-medium">?45</span>
+</div>
+<p class="text-gray-400 mb-4">Aged rum with vanilla and caramel notes.</p>
+<button class="add-to-cart-btn w-full" data-id="drink22" data-name="Bacardi Reserva Limitada" data-price="45" data-image="https://readdy.ai/api/search-image?query=bacardi%20rum%20bottle%20and%20glass%2C%20professional%20spirits%20photography&width=600&height=400&seq=spirit6&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<!-- Non-Alcoholic -->
+<div class="menu-item-enhanced" data-category="non-alcoholic">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=fresh%20fruit%20smoothie%20with%20berries%20and%20mint%2C%20professional%20drink%20photography&width=600&height=400&seq=nonalc1&orientation=landscape" alt="Berry Smoothie" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Fresh Berry Smoothie</h3>
+<span class="text-primary font-medium">?8</span>
+</div>
+<p class="text-gray-400 mb-4">Blend of fresh berries, yogurt, and honey.</p>
+<button class="add-to-cart-btn w-full" data-id="drink23" data-name="Fresh Berry Smoothie" data-price="8" data-image="https://readdy.ai/api/search-image?query=fresh%20fruit%20smoothie%20with%20berries%20and%20mint%2C%20professional%20drink%20photography&width=600&height=400&seq=nonalc1&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="non-alcoholic">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=artisanal%20coffee%20latte%20with%20foam%20art%2C%20professional%20drink%20photography&width=600&height=400&seq=nonalc2&orientation=landscape" alt="Artisan Coffee" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Artisan Coffee</h3>
+<span class="text-primary font-medium">?6</span>
+</div>
+<p class="text-gray-400 mb-4">Single-origin coffee beans, expertly brewed.</p>
+<button class="add-to-cart-btn w-full" data-id="drink24" data-name="Artisan Coffee" data-price="6" data-image="https://readdy.ai/api/search-image?query=artisanal%20coffee%20latte%20with%20foam%20art%2C%20professional%20drink%20photography&width=600&height=400&seq=nonalc2&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="non-alcoholic">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=premium%20tea%20service%20with%20elegant%20teapot%20and%20cup%2C%20professional%20drink%20photography&width=600&height=400&seq=nonalc3&orientation=landscape" alt="Premium Tea" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Premium Tea Selection</h3>
+<span class="text-primary font-medium">?7</span>
+</div>
+<p class="text-gray-400 mb-4">Curated selection of fine teas from around the world.</p>
+<button class="add-to-cart-btn w-full" data-id="drink25" data-name="Premium Tea Selection" data-price="7" data-image="https://readdy.ai/api/search-image?query=premium%20tea%20service%20with%20elegant%20teapot%20and%20cup%2C%20professional%20drink%20photography&width=600&height=400&seq=nonalc3&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="non-alcoholic">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=sparkling%20water%20with%20cucumber%20and%20mint%2C%20professional%20drink%20photography&width=600&height=400&seq=nonalc4&orientation=landscape" alt="Infused Sparkling Water" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Infused Sparkling Water</h3>
+<span class="text-primary font-medium">?5</span>
+</div>
+<p class="text-gray-400 mb-4">Sparkling water with fresh herbs and fruits.</p>
+<button class="add-to-cart-btn w-full" data-id="drink26" data-name="Infused Sparkling Water" data-price="5" data-image="https://readdy.ai/api/search-image?query=sparkling%20water%20with%20cucumber%20and%20mint%2C%20professional%20drink%20photography&width=600&height=400&seq=nonalc4&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="non-alcoholic">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=fresh%20juice%20blend%20with%20tropical%20fruits%2C%20professional%20drink%20photography&width=600&height=400&seq=nonalc5&orientation=landscape" alt="Tropical Juice" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Tropical Fruit Juice</h3>
+<span class="text-primary font-medium">?9</span>
+</div>
+<p class="text-gray-400 mb-4">Fresh blend of mango, pineapple, and passion fruit.</p>
+<button class="add-to-cart-btn w-full" data-id="drink27" data-name="Tropical Fruit Juice" data-price="9" data-image="https://readdy.ai/api/search-image?query=fresh%20juice%20blend%20with%20tropical%20fruits%2C%20professional%20drink%20photography&width=600&height=400&seq=nonalc5&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="non-alcoholic">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=virgin%20mojito%20mocktail%20with%20mint%20and%20lime%2C%20professional%20drink%20photography&width=600&height=400&seq=nonalc6&orientation=landscape" alt="Virgin Mojito" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Virgin Mojito</h3>
+<span class="text-primary font-medium">?7</span>
+</div>
+<p class="text-gray-400 mb-4">Refreshing mint and lime mocktail with soda water.</p>
+<button class="add-to-cart-btn w-full" data-id="drink28" data-name="Virgin Mojito" data-price="7" data-image="https://readdy.ai/api/search-image?query=virgin%20mojito%20mocktail%20with%20mint%20and%20lime%2C%20professional%20drink%20photography&width=600&height=400&seq=nonalc6&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="non-alcoholic">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=kombucha%20drink%20with%20ginger%20and%20herbs%2C%20professional%20drink%20photography&width=600&height=400&seq=nonalc7&orientation=landscape" alt="Artisan Kombucha" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Artisan Kombucha</h3>
+<span class="text-primary font-medium">?8</span>
+</div>
+<p class="text-gray-400 mb-4">Probiotic fermented tea with ginger and herbs.</p>
+<button class="add-to-cart-btn w-full" data-id="drink29" data-name="Artisan Kombucha" data-price="8" data-image="https://readdy.ai/api/search-image?query=kombucha%20drink%20with%20ginger%20and%20herbs%2C%20professional%20drink%20photography&width=600&height=400&seq=nonalc7&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="non-alcoholic">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=hot%20chocolate%20with%20whipped%20cream%20and%20marshmallows%2C%20professional%20drink%20photography&width=600&height=400&seq=nonalc8&orientation=landscape" alt="Gourmet Hot Chocolate" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Gourmet Hot Chocolate</h3>
+<span class="text-primary font-medium">?9</span>
+</div>
+<p class="text-gray-400 mb-4">Rich Belgian chocolate with whipped cream and marshmallows.</p>
+<button class="add-to-cart-btn w-full" data-id="drink30" data-name="Gourmet Hot Chocolate" data-price="9" data-image="https://readdy.ai/api/search-image?query=hot%20chocolate%20with%20whipped%20cream%20and%20marshmallows%2C%20professional%20drink%20photography&width=600&height=400&seq=nonalc8&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</section>
+</main>
+
+<footer class="bg-gray-950 py-12">
+<div class="container mx-auto px-4">
+<div class="text-center">
+<div class="logo text-3xl text-white font-bold mb-4">Pokyto's</div>
+<p class="text-gray-400 mb-6">Experience Culinary Excellence & Artistry</p>
+<div class="flex justify-center space-x-6 mb-8">
+<a href="#" class="text-gray-400 hover:text-primary transition-colors">
+<i class="ri-facebook-line ri-xl"></i>
+</a>
+<a href="#" class="text-gray-400 hover:text-primary transition-colors">
+<i class="ri-instagram-line ri-xl"></i>
+</a>
+<a href="#" class="text-gray-400 hover:text-primary transition-colors">
+<i class="ri-twitter-line ri-xl"></i>
+</a>
+<a href="#" class="text-gray-400 hover:text-primary transition-colors">
+<i class="ri-youtube-line ri-xl"></i>
+</a>
+</div>
+<div class="border-t border-gray-800 pt-8">
+<p class="text-gray-500">&copy; 2024 Pokyto's Restaurant. All rights reserved.</p>
+</div>
+</div>
+</div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+// Category filtering
+document.addEventListener('DOMContentLoaded', function() {
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const menuItems = document.querySelectorAll('.menu-item-enhanced');
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const category = this.getAttribute('data-category');
+            
+            // Update active tab
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Filter menu items
+            menuItems.forEach(item => {
+                if (category === 'all' || item.getAttribute('data-category') === category) {
+                    item.style.display = 'block';
+                    item.classList.add('fade-in-up');
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    });
+});
+</script>
+</body>
+</html>

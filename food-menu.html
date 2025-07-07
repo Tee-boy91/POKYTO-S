@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Food Menu - Pokyto's Restaurant</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>tailwind.config={theme:{extend:{colors:{primary:'#ff6b6b',secondary:'#4ecdc4'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/ScrollTrigger.min.js"></script>
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/dropdown.css">
+</head>
+<body class="custom-scrollbar">
+<header class="fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-black bg-opacity-95" id="header">
+<div class="container mx-auto px-4 py-4 flex items-center justify-between">
+<div class="flex items-center">
+<a href="index.html" class="logo text-3xl text-white font-bold">Pokyto's</a>
+</div>
+<nav class="hidden md:flex items-center space-x-8">
+<a href="index.html#home" class="nav-link text-white hover:text-primary">Home</a>
+<a href="index.html#about" class="nav-link text-white hover:text-primary">About</a>
+<div class="dropdown">
+<a href="#menu" class="nav-link text-white hover:text-primary">Menu</a>
+<div class="dropdown-menu">
+<a href="food-menu.html" class="dropdown-item">
+<i class="ri-restaurant-line mr-2"></i>Food Menu
+</a>
+<a href="drinks-menu.html" class="dropdown-item">
+<i class="ri-cup-line mr-2"></i>Drinks Menu
+</a>
+</div>
+</div>
+<a href="index.html#contact" class="nav-link text-white hover:text-primary">Contact</a>
+</nav>
+<div class="flex items-center space-x-4">
+<button id="cart-button" class="relative text-white hover:text-primary transition-colors">
+<div class="w-10 h-10 flex items-center justify-center">
+<i class="ri-shopping-cart-2-line ri-lg"></i>
+</div>
+<span id="cart-count" class="absolute -top-1 -right-1 bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+</button>
+<button id="mobile-menu-button" class="md:hidden text-white hover:text-primary transition-colors">
+<div class="w-10 h-10 flex items-center justify-center">
+<i class="ri-menu-line ri-lg"></i>
+</div>
+</button>
+</div>
+</div>
+<div id="mobile-menu" class="md:hidden bg-black bg-opacity-95 absolute w-full left-0 top-full py-4 px-4 hidden z-40 backdrop-blur-sm border-t border-gray-800">
+<nav class="flex flex-col space-y-4">
+<a href="index.html#home" class="nav-link text-white hover:text-primary py-2">Home</a>
+<a href="index.html#about" class="nav-link text-white hover:text-primary py-2">About</a>
+<a href="food-menu.html" class="nav-link text-white hover:text-primary py-2">Food Menu</a>
+<a href="drinks-menu.html" class="nav-link text-white hover:text-primary py-2">Drinks Menu</a>
+<a href="index.html#contact" class="nav-link text-white hover:text-primary py-2">Contact</a>
+</nav>
+</div>
+</header>
+
+<!-- Cart Sidebar -->
+<div id="cart-sidebar" class="fixed top-0 right-0 w-full md:w-96 h-full bg-black bg-opacity-95 z-50 transform translate-x-full transition-transform duration-300 shadow-2xl">
+<div class="flex flex-col h-full">
+<div class="p-6 border-b border-gray-800">
+<div class="flex items-center justify-between">
+<h2 class="text-2xl font-bold text-white">Your Cart</h2>
+<button id="close-cart" class="text-white hover:text-primary">
+<div class="w-8 h-8 flex items-center justify-center">
+<i class="ri-close-line ri-lg"></i>
+</div>
+</button>
+</div>
+</div>
+<div id="cart-items" class="flex-1 overflow-y-auto p-6 custom-scrollbar">
+<div class="empty-cart text-center py-10">
+<div class="w-16 h-16 mx-auto mb-4 text-gray-500">
+<i class="ri-shopping-cart-line ri-3x"></i>
+</div>
+<p class="text-gray-400">Your cart is empty</p>
+<button onclick="showMenuChoice()" class="mt-4 px-6 py-2 bg-primary text-white rounded-button hover:bg-opacity-90 transition-all">Browse Menu</button>
+</div>
+</div>
+<div class="p-6 border-t border-gray-800">
+<div class="flex justify-between mb-4">
+<span class="text-gray-400">Subtotal</span>
+<span id="cart-subtotal" class="text-white font-medium">₵0.00</span>
+</div>
+<button id="checkout-button" class="w-full py-3 bg-primary text-white rounded-button hover:bg-opacity-90 transition-all font-medium">
+Proceed to Checkout
+</button>
+</div>
+</div>
+</div>
+
+<!-- Checkout Modal -->
+<div id="checkout-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+<div class="absolute inset-0 bg-black bg-opacity-70" id="checkout-overlay"></div>
+<div class="relative bg-gray-900 rounded-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto custom-scrollbar mx-4">
+<div class="p-6 border-b border-gray-800">
+<div class="flex items-center justify-between">
+<h2 class="text-2xl font-bold text-white">Complete Your Order</h2>
+<button id="close-checkout" class="text-white hover:text-primary">
+<div class="w-8 h-8 flex items-center justify-center">
+<i class="ri-close-line ri-lg"></i>
+</div>
+</button>
+</div>
+</div>
+<div class="p-6">
+<div class="mb-8">
+<h3 class="text-xl font-medium text-white mb-4">Order Summary</h3>
+<div id="checkout-items" class="space-y-4 mb-4">
+<!-- Checkout items will be dynamically added here -->
+</div>
+<div class="pt-4 border-t border-gray-800">
+<div class="flex justify-between mb-2">
+<span class="text-gray-400">Subtotal</span>
+<span id="checkout-subtotal" class="text-white">₵0.00</span>
+</div>
+<div class="flex justify-between mb-2">
+<span class="text-gray-400">Delivery Fee</span>
+<span id="checkout-delivery" class="text-white">₵0.00</span>
+</div>
+<div class="flex justify-between font-medium">
+<span class="text-white">Total</span>
+<span id="checkout-total" class="text-primary text-lg">₵0.00</span>
+</div>
+</div>
+</div>
+<form id="checkout-form" class="space-y-6">
+<h3 class="text-xl font-medium text-white">Customer Information</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div>
+<label for="name" class="block text-sm font-medium text-gray-400 mb-1">Full Name</label>
+<input type="text" id="name" name="name" class="w-full bg-gray-800 border-none rounded text-white px-4 py-3 focus:ring-2 focus:ring-primary outline-none" required>
+</div>
+<div>
+<label for="phone" class="block text-sm font-medium text-gray-400 mb-1">Phone Number</label>
+<input type="tel" id="phone" name="phone" class="w-full bg-gray-800 border-none rounded text-white px-4 py-3 focus:ring-2 focus:ring-primary outline-none" required>
+</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-400 mb-3">Order Type</label>
+<div class="flex space-x-6">
+<label class="custom-radio">
+<input type="radio" name="order-type" value="pickup" checked>
+<span class="radio-mark mr-2"></span>
+<span>Pickup</span>
+</label>
+<label class="custom-radio">
+<input type="radio" name="order-type" value="delivery">
+<span class="radio-mark mr-2"></span>
+<span>Delivery</span>
+</label>
+</div>
+</div>
+<div id="delivery-details" class="hidden">
+<div class="mb-4">
+<label for="address" class="block text-sm font-medium text-gray-400 mb-1">Delivery Address</label>
+<input type="text" id="address" name="address" class="w-full bg-gray-800 border-none rounded text-white px-4 py-3 focus:ring-2 focus:ring-primary outline-none">
+</div>
+<div class="flex items-center space-x-2">
+<button type="button" id="use-location" class="flex items-center text-primary hover:text-white transition-colors">
+<div class="w-5 h-5 flex items-center justify-center mr-1">
+<i class="ri-map-pin-line"></i>
+</div>
+<span>Use my current location</span>
+</button>
+</div>
+</div>
+<div>
+<label for="notes" class="block text-sm font-medium text-gray-400 mb-1">Special Instructions (Optional)</label>
+<textarea id="notes" name="notes" rows="3" class="w-full bg-gray-800 border-none rounded text-white px-4 py-3 focus:ring-2 focus:ring-primary outline-none resize-none"></textarea>
+</div>
+<button type="submit" class="w-full py-4 bg-primary text-white rounded-button hover:bg-opacity-90 transition-all font-medium">
+Place Order
+</button>
+</form>
+</div>
+</div>
+</div>
+
+<main class="pt-20">
+<!-- Hero Section -->
+<section class="py-20 bg-gradient-to-r from-gray-900 to-black">
+<div class="container mx-auto px-4 text-center">
+<h1 class="text-4xl md:text-6xl font-bold mb-6 gradient-text">Food Menu</h1>
+<p class="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
+Discover our exquisite collection of culinary masterpieces, crafted with passion and the finest ingredients from around the world.
+</p>
+</div>
+</section>
+
+<!-- Menu Categories -->
+<section class="py-16 bg-gray-950">
+<div class="container mx-auto px-4">
+<div class="flex flex-wrap justify-center gap-4 mb-12">
+<button class="tab-button active px-6 py-3 rounded-button transition-all" data-category="all">All Items</button>
+<button class="tab-button px-6 py-3 rounded-button transition-all" data-category="appetizers">Appetizers</button>
+<button class="tab-button px-6 py-3 rounded-button transition-all" data-category="mains">Main Courses</button>
+<button class="tab-button px-6 py-3 rounded-button transition-all" data-category="desserts">Desserts</button>
+<button class="tab-button px-6 py-3 rounded-button transition-all" data-category="specials">Chef's Specials</button>
+</div>
+
+<!-- Menu Items Grid -->
+<div id="menu-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+<!-- Appetizers -->
+<div class="menu-item-enhanced" data-category="appetizers">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=gourmet%20truffle%20arancini%20with%20parmesan%20cheese%20and%20herbs%2C%20served%20on%20elegant%20black%20plate%2C%20professional%20food%20photography&width=600&height=400&seq=app1&orientation=landscape" alt="Truffle Arancini" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Truffle Arancini</h3>
+<span class="text-primary font-medium">?16</span>
+</div>
+<p class="text-gray-400 mb-4">Crispy risotto balls filled with truffle and parmesan, served with garlic aioli.</p>
+<button class="add-to-cart-btn w-full" data-id="food1" data-name="Truffle Arancini" data-price="16" data-image="https://readdy.ai/api/search-image?query=gourmet%20truffle%20arancini%20with%20parmesan%20cheese%20and%20herbs%2C%20served%20on%20elegant%20black%20plate%2C%20professional%20food%20photography&width=600&height=400&seq=app1&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="appetizers">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=fresh%20oysters%20on%20half%20shell%20with%20mignonette%20sauce%20and%20lemon%2C%20served%20on%20ice%2C%20professional%20food%20photography&width=600&height=400&seq=app2&orientation=landscape" alt="Fresh Oysters" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Fresh Oysters (6pc)</h3>
+<span class="text-primary font-medium">?24</span>
+</div>
+<p class="text-gray-400 mb-4">Freshly shucked oysters served with classic mignonette and lemon.</p>
+<button class="add-to-cart-btn w-full" data-id="food2" data-name="Fresh Oysters (6pc)" data-price="24" data-image="https://readdy.ai/api/search-image?query=fresh%20oysters%20on%20half%20shell%20with%20mignonette%20sauce%20and%20lemon%2C%20served%20on%20ice%2C%20professional%20food%20photography&width=600&height=400&seq=app2&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="appetizers">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=beef%20carpaccio%20with%20arugula%20parmesan%20and%20capers%2C%20drizzled%20with%20olive%20oil%2C%20professional%20food%20photography&width=600&height=400&seq=app3&orientation=landscape" alt="Beef Carpaccio" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Beef Carpaccio</h3>
+<span class="text-primary font-medium">?22</span>
+</div>
+<p class="text-gray-400 mb-4">Thinly sliced raw beef with arugula, parmesan, and capers.</p>
+<button class="add-to-cart-btn w-full" data-id="food3" data-name="Beef Carpaccio" data-price="22" data-image="https://readdy.ai/api/search-image?query=beef%20carpaccio%20with%20arugula%20parmesan%20and%20capers%2C%20drizzled%20with%20olive%20oil%2C%20professional%20food%20photography&width=600&height=400&seq=app3&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="appetizers">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=burrata%20cheese%20with%20heirloom%20tomatoes%20and%20basil%2C%20drizzled%20with%20balsamic%20glaze%2C%20professional%20food%20photography&width=600&height=400&seq=app4&orientation=landscape" alt="Burrata Caprese" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Burrata Caprese</h3>
+<span class="text-primary font-medium">?18</span>
+</div>
+<p class="text-gray-400 mb-4">Creamy burrata with heirloom tomatoes, basil, and balsamic reduction.</p>
+<button class="add-to-cart-btn w-full" data-id="food4" data-name="Burrata Caprese" data-price="18" data-image="https://readdy.ai/api/search-image?query=burrata%20cheese%20with%20heirloom%20tomatoes%20and%20basil%2C%20drizzled%20with%20balsamic%20glaze%2C%20professional%20food%20photography&width=600&height=400&seq=app4&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="appetizers">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=pan%20seared%20scallops%20with%20cauliflower%20puree%20and%20pancetta%2C%20professional%20food%20photography&width=600&height=400&seq=app5&orientation=landscape" alt="Pan Seared Scallops" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Pan Seared Scallops</h3>
+<span class="text-primary font-medium">?28</span>
+</div>
+<p class="text-gray-400 mb-4">Perfectly seared scallops with cauliflower puree and crispy pancetta.</p>
+<button class="add-to-cart-btn w-full" data-id="food5" data-name="Pan Seared Scallops" data-price="28" data-image="https://readdy.ai/api/search-image?query=pan%20seared%20scallops%20with%20cauliflower%20puree%20and%20pancetta%2C%20professional%20food%20photography&width=600&height=400&seq=app5&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="appetizers">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=tuna%20tartare%20with%20avocado%20and%20sesame%20seeds%2C%20served%20with%20wonton%20crisps%2C%20professional%20food%20photography&width=600&height=400&seq=app6&orientation=landscape" alt="Tuna Tartare" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Tuna Tartare</h3>
+<span class="text-primary font-medium">?26</span>
+</div>
+<p class="text-gray-400 mb-4">Fresh tuna tartare with avocado, sesame, and wonton crisps.</p>
+<button class="add-to-cart-btn w-full" data-id="food6" data-name="Tuna Tartare" data-price="26" data-image="https://readdy.ai/api/search-image?query=tuna%20tartare%20with%20avocado%20and%20sesame%20seeds%2C%20served%20with%20wonton%20crisps%2C%20professional%20food%20photography&width=600&height=400&seq=app6&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="appetizers">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=foie%20gras%20with%20brioche%20and%20cherry%20compote%2C%20elegant%20plating%2C%20professional%20food%20photography&width=600&height=400&seq=app7&orientation=landscape" alt="Foie Gras" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Foie Gras</h3>
+<span class="text-primary font-medium">?38</span>
+</div>
+<p class="text-gray-400 mb-4">Pan-seared foie gras with brioche toast and cherry compote.</p>
+<button class="add-to-cart-btn w-full" data-id="food7" data-name="Foie Gras" data-price="38" data-image="https://readdy.ai/api/search-image?query=foie%20gras%20with%20brioche%20and%20cherry%20compote%2C%20elegant%20plating%2C%20professional%20food%20photography&width=600&height=400&seq=app7&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="appetizers">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=lobster%20bisque%20soup%20with%20cream%20and%20herbs%2C%20served%20in%20elegant%20bowl%2C%20professional%20food%20photography&width=600&height=400&seq=app8&orientation=landscape" alt="Lobster Bisque" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Lobster Bisque</h3>
+<span class="text-primary font-medium">?20</span>
+</div>
+<p class="text-gray-400 mb-4">Rich and creamy lobster bisque with cognac and fresh herbs.</p>
+<button class="add-to-cart-btn w-full" data-id="food8" data-name="Lobster Bisque" data-price="20" data-image="https://readdy.ai/api/search-image?query=lobster%20bisque%20soup%20with%20cream%20and%20herbs%2C%20served%20in%20elegant%20bowl%2C%20professional%20food%20photography&width=600&height=400&seq=app8&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<!-- Main Courses -->
+<div class="menu-item-enhanced" data-category="mains">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=wagyu%20ribeye%20steak%20with%20roasted%20vegetables%20and%20red%20wine%20sauce%2C%20professional%20food%20photography&width=600&height=400&seq=main1&orientation=landscape" alt="Wagyu Ribeye" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Wagyu Ribeye</h3>
+<span class="text-primary font-medium">?85</span>
+</div>
+<p class="text-gray-400 mb-4">Premium wagyu ribeye with roasted vegetables and red wine reduction.</p>
+<button class="add-to-cart-btn w-full" data-id="food9" data-name="Wagyu Ribeye" data-price="85" data-image="https://readdy.ai/api/search-image?query=wagyu%20ribeye%20steak%20with%20roasted%20vegetables%20and%20red%20wine%20sauce%2C%20professional%20food%20photography&width=600&height=400&seq=main1&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="mains">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=whole%20roasted%20lobster%20with%20garlic%20butter%20and%20herbs%2C%20professional%20food%20photography&width=600&height=400&seq=main2&orientation=landscape" alt="Whole Lobster" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Whole Lobster</h3>
+<span class="text-primary font-medium">?68</span>
+</div>
+<p class="text-gray-400 mb-4">Fresh whole lobster grilled with garlic butter and fresh herbs.</p>
+<button class="add-to-cart-btn w-full" data-id="food10" data-name="Whole Lobster" data-price="68" data-image="https://readdy.ai/api/search-image?query=whole%20roasted%20lobster%20with%20garlic%20butter%20and%20herbs%2C%20professional%20food%20photography&width=600&height=400&seq=main2&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="mains">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=duck%20confit%20with%20orange%20glaze%20and%20roasted%20potatoes%2C%20professional%20food%20photography&width=600&height=400&seq=main3&orientation=landscape" alt="Duck Confit" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Duck Confit</h3>
+<span class="text-primary font-medium">?42</span>
+</div>
+<p class="text-gray-400 mb-4">Slow-cooked duck leg with orange glaze and crispy potatoes.</p>
+<button class="add-to-cart-btn w-full" data-id="food11" data-name="Duck Confit" data-price="42" data-image="https://readdy.ai/api/search-image?query=duck%20confit%20with%20orange%20glaze%20and%20roasted%20potatoes%2C%20professional%20food%20photography&width=600&height=400&seq=main3&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="mains">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=rack%20of%20lamb%20with%20herb%20crust%20and%20mint%20sauce%2C%20professional%20food%20photography&width=600&height=400&seq=main4&orientation=landscape" alt="Rack of Lamb" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Rack of Lamb</h3>
+<span class="text-primary font-medium">?58</span>
+</div>
+<p class="text-gray-400 mb-4">Herb-crusted rack of lamb with mint sauce and seasonal vegetables.</p>
+<button class="add-to-cart-btn w-full" data-id="food12" data-name="Rack of Lamb" data-price="58" data-image="https://readdy.ai/api/search-image?query=rack%20of%20lamb%20with%20herb%20crust%20and%20mint%20sauce%2C%20professional%20food%20photography&width=600&height=400&seq=main4&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="mains">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=pan%20seared%20salmon%20with%20lemon%20butter%20sauce%20and%20asparagus%2C%20professional%20food%20photography&width=600&height=400&seq=main5&orientation=landscape" alt="Pan Seared Salmon" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Pan Seared Salmon</h3>
+<span class="text-primary font-medium">?36</span>
+</div>
+<p class="text-gray-400 mb-4">Fresh Atlantic salmon with lemon butter sauce and grilled asparagus.</p>
+<button class="add-to-cart-btn w-full" data-id="food13" data-name="Pan Seared Salmon" data-price="36" data-image="https://readdy.ai/api/search-image?query=pan%20seared%20salmon%20with%20lemon%20butter%20sauce%20and%20asparagus%2C%20professional%20food%20photography&width=600&height=400&seq=main5&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="mains">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=osso%20buco%20with%20risotto%20milanese%20and%20gremolata%2C%20professional%20food%20photography&width=600&height=400&seq=main6&orientation=landscape" alt="Osso Buco" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Osso Buco</h3>
+<span class="text-primary font-medium">?48</span>
+</div>
+<p class="text-gray-400 mb-4">Braised veal shank with saffron risotto and gremolata.</p>
+<button class="add-to-cart-btn w-full" data-id="food14" data-name="Osso Buco" data-price="48" data-image="https://readdy.ai/api/search-image?query=osso%20buco%20with%20risotto%20milanese%20and%20gremolata%2C%20professional%20food%20photography&width=600&height=400&seq=main6&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="mains">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=seafood%20paella%20with%20saffron%20rice%20and%20mixed%20seafood%2C%20professional%20food%20photography&width=600&height=400&seq=main7&orientation=landscape" alt="Seafood Paella" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Seafood Paella</h3>
+<span class="text-primary font-medium">?52</span>
+</div>
+<p class="text-gray-400 mb-4">Traditional Spanish paella with fresh seafood and saffron rice.</p>
+<button class="add-to-cart-btn w-full" data-id="food15" data-name="Seafood Paella" data-price="52" data-image="https://readdy.ai/api/search-image?query=seafood%20paella%20with%20saffron%20rice%20and%20mixed%20seafood%2C%20professional%20food%20photography&width=600&height=400&seq=main7&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="mains">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=beef%20wellington%20with%20mushroom%20duxelles%20and%20puff%20pastry%2C%20professional%20food%20photography&width=600&height=400&seq=main8&orientation=landscape" alt="Beef Wellington" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Beef Wellington</h3>
+<span class="text-primary font-medium">?72</span>
+</div>
+<p class="text-gray-400 mb-4">Classic beef wellington with mushroom duxelles in puff pastry.</p>
+<button class="add-to-cart-btn w-full" data-id="food16" data-name="Beef Wellington" data-price="72" data-image="https://readdy.ai/api/search-image?query=beef%20wellington%20with%20mushroom%20duxelles%20and%20puff%20pastry%2C%20professional%20food%20photography&width=600&height=400&seq=main8&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="mains">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=roasted%20chicken%20with%20truffle%20sauce%20and%20roasted%20vegetables%2C%20professional%20food%20photography&width=600&height=400&seq=main9&orientation=landscape" alt="Roasted Chicken" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Roasted Chicken</h3>
+<span class="text-primary font-medium">?32</span>
+</div>
+<p class="text-gray-400 mb-4">Free-range chicken with truffle sauce and seasonal vegetables.</p>
+<button class="add-to-cart-btn w-full" data-id="food17" data-name="Roasted Chicken" data-price="32" data-image="https://readdy.ai/api/search-image?query=roasted%20chicken%20with%20truffle%20sauce%20and%20roasted%20vegetables%2C%20professional%20food%20photography&width=600&height=400&seq=main9&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="mains">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=grilled%20sea%20bass%20with%20mediterranean%20vegetables%20and%20olive%20tapenade%2C%20professional%20food%20photography&width=600&height=400&seq=main10&orientation=landscape" alt="Grilled Sea Bass" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Grilled Sea Bass</h3>
+<span class="text-primary font-medium">?44</span>
+</div>
+<p class="text-gray-400 mb-4">Mediterranean sea bass with roasted vegetables and olive tapenade.</p>
+<button class="add-to-cart-btn w-full" data-id="food18" data-name="Grilled Sea Bass" data-price="44" data-image="https://readdy.ai/api/search-image?query=grilled%20sea%20bass%20with%20mediterranean%20vegetables%20and%20olive%20tapenade%2C%20professional%20food%20photography&width=600&height=400&seq=main10&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<!-- Desserts -->
+<div class="menu-item-enhanced" data-category="desserts">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=chocolate%20lava%20cake%20with%20vanilla%20ice%20cream%20and%20berry%20coulis%2C%20professional%20food%20photography&width=600&height=400&seq=dessert1&orientation=landscape" alt="Chocolate Lava Cake" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Chocolate Lava Cake</h3>
+<span class="text-primary font-medium">?14</span>
+</div>
+<p class="text-gray-400 mb-4">Warm chocolate cake with molten center, vanilla ice cream.</p>
+<button class="add-to-cart-btn w-full" data-id="food19" data-name="Chocolate Lava Cake" data-price="14" data-image="https://readdy.ai/api/search-image?query=chocolate%20lava%20cake%20with%20vanilla%20ice%20cream%20and%20berry%20coulis%2C%20professional%20food%20photography&width=600&height=400&seq=dessert1&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="desserts">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=tiramisu%20with%20mascarpone%20and%20coffee%20layers%2C%20dusted%20with%20cocoa%2C%20professional%20food%20photography&width=600&height=400&seq=dessert2&orientation=landscape" alt="Tiramisu" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Tiramisu</h3>
+<span class="text-primary font-medium">?12</span>
+</div>
+<p class="text-gray-400 mb-4">Classic Italian tiramisu with mascarpone and espresso.</p>
+<button class="add-to-cart-btn w-full" data-id="food20" data-name="Tiramisu" data-price="12" data-image="https://readdy.ai/api/search-image?query=tiramisu%20with%20mascarpone%20and%20coffee%20layers%2C%20dusted%20with%20cocoa%2C%20professional%20food%20photography&width=600&height=400&seq=dessert2&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="desserts">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=crème%20brûlée%20with%20caramelized%20sugar%20top%20and%20vanilla%20beans%2C%20professional%20food%20photography&width=600&height=400&seq=dessert3&orientation=landscape" alt="Crème Brûlée" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Crème Brûlée</h3>
+<span class="text-primary font-medium">?13</span>
+</div>
+<p class="text-gray-400 mb-4">Vanilla custard with caramelized sugar crust.</p>
+<button class="add-to-cart-btn w-full" data-id="food21" data-name="Crème Brûlée" data-price="13" data-image="https://readdy.ai/api/search-image?query=crème%20brûlée%20with%20caramelized%20sugar%20top%20and%20vanilla%20beans%2C%20professional%20food%20photography&width=600&height=400&seq=dessert3&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="desserts">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=lemon%20tart%20with%20meringue%20and%20fresh%20berries%2C%20professional%20food%20photography&width=600&height=400&seq=dessert4&orientation=landscape" alt="Lemon Tart" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Lemon Tart</h3>
+<span class="text-primary font-medium">?11</span>
+</div>
+<p class="text-gray-400 mb-4">Tangy lemon curd tart with Italian meringue and fresh berries.</p>
+<button class="add-to-cart-btn w-full" data-id="food22" data-name="Lemon Tart" data-price="11" data-image="https://readdy.ai/api/search-image?query=lemon%20tart%20with%20meringue%20and%20fresh%20berries%2C%20professional%20food%20photography&width=600&height=400&seq=dessert4&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="desserts">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=panna%20cotta%20with%20berry%20compote%20and%20mint%20garnish%2C%20professional%20food%20photography&width=600&height=400&seq=dessert5&orientation=landscape" alt="Panna Cotta" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Panna Cotta</h3>
+<span class="text-primary font-medium">?10</span>
+</div>
+<p class="text-gray-400 mb-4">Silky vanilla panna cotta with mixed berry compote.</p>
+<button class="add-to-cart-btn w-full" data-id="food23" data-name="Panna Cotta" data-price="10" data-image="https://readdy.ai/api/search-image?query=panna%20cotta%20with%20berry%20compote%20and%20mint%20garnish%2C%20professional%20food%20photography&width=600&height=400&seq=dessert5&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="desserts">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=chocolate%20soufflé%20with%20powdered%20sugar%20and%20raspberry%20sauce%2C%20professional%20food%20photography&width=600&height=400&seq=dessert6&orientation=landscape" alt="Chocolate Soufflé" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Chocolate Soufflé</h3>
+<span class="text-primary font-medium">?16</span>
+</div>
+<p class="text-gray-400 mb-4">Light and airy chocolate soufflé with raspberry coulis.</p>
+<button class="add-to-cart-btn w-full" data-id="food24" data-name="Chocolate Soufflé" data-price="16" data-image="https://readdy.ai/api/search-image?query=chocolate%20soufflé%20with%20powdered%20sugar%20and%20raspberry%20sauce%2C%20professional%20food%20photography&width=600&height=400&seq=dessert6&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<!-- Chef's Specials -->
+<div class="menu-item-enhanced" data-category="specials">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=tasting%20menu%20with%20multiple%20small%20courses%20elegantly%20plated%2C%20professional%20food%20photography&width=600&height=400&seq=special1&orientation=landscape" alt="Chef's Tasting Menu" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Chef's Tasting Menu</h3>
+<span class="text-primary font-medium">?125</span>
+</div>
+<p class="text-gray-400 mb-4">7-course tasting menu featuring seasonal ingredients and chef's creativity.</p>
+<button class="add-to-cart-btn w-full" data-id="food25" data-name="Chef's Tasting Menu" data-price="125" data-image="https://readdy.ai/api/search-image?query=tasting%20menu%20with%20multiple%20small%20courses%20elegantly%20plated%2C%20professional%20food%20photography&width=600&height=400&seq=special1&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="specials">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=dry%20aged%20tomahawk%20steak%20with%20bone%20marrow%20and%20herbs%2C%20professional%20food%20photography&width=600&height=400&seq=special2&orientation=landscape" alt="Dry Aged Tomahawk" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Dry Aged Tomahawk</h3>
+<span class="text-primary font-medium">?95</span>
+</div>
+<p class="text-gray-400 mb-4">45-day dry aged tomahawk steak with roasted bone marrow.</p>
+<button class="add-to-cart-btn w-full" data-id="food26" data-name="Dry Aged Tomahawk" data-price="95" data-image="https://readdy.ai/api/search-image?query=dry%20aged%20tomahawk%20steak%20with%20bone%20marrow%20and%20herbs%2C%20professional%20food%20photography&width=600&height=400&seq=special2&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="specials">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=black%20truffle%20pasta%20with%20parmesan%20and%20butter%20sauce%2C%20professional%20food%20photography&width=600&height=400&seq=special3&orientation=landscape" alt="Black Truffle Pasta" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Black Truffle Pasta</h3>
+<span class="text-primary font-medium">?65</span>
+</div>
+<p class="text-gray-400 mb-4">Fresh pasta with shaved black truffles and aged parmesan.</p>
+<button class="add-to-cart-btn w-full" data-id="food27" data-name="Black Truffle Pasta" data-price="65" data-image="https://readdy.ai/api/search-image?query=black%20truffle%20pasta%20with%20parmesan%20and%20butter%20sauce%2C%20professional%20food%20photography&width=600&height=400&seq=special3&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="specials">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=caviar%20service%20with%20blinis%20and%20traditional%20accompaniments%2C%20professional%20food%20photography&width=600&height=400&seq=special4&orientation=landscape" alt="Caviar Service" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Caviar Service</h3>
+<span class="text-primary font-medium">?180</span>
+</div>
+<p class="text-gray-400 mb-4">Premium Ossetra caviar with traditional accompaniments.</p>
+<button class="add-to-cart-btn w-full" data-id="food28" data-name="Caviar Service" data-price="180" data-image="https://readdy.ai/api/search-image?query=caviar%20service%20with%20blinis%20and%20traditional%20accompaniments%2C%20professional%20food%20photography&width=600&height=400&seq=special4&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="specials">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=whole%20roasted%20turbot%20with%20champagne%20sauce%20and%20vegetables%2C%20professional%20food%20photography&width=600&height=400&seq=special5&orientation=landscape" alt="Whole Turbot" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Whole Turbot</h3>
+<span class="text-primary font-medium">?88</span>
+</div>
+<p class="text-gray-400 mb-4">Whole roasted turbot with champagne beurre blanc sauce.</p>
+<button class="add-to-cart-btn w-full" data-id="food29" data-name="Whole Turbot" data-price="88" data-image="https://readdy.ai/api/search-image?query=whole%20roasted%20turbot%20with%20champagne%20sauce%20and%20vegetables%2C%20professional%20food%20photography&width=600&height=400&seq=special5&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+<div class="menu-item-enhanced" data-category="specials">
+<div class="item-content">
+<div class="h-64 overflow-hidden rounded-t-lg">
+<img src="https://readdy.ai/api/search-image?query=gold%20leaf%20dessert%20with%20chocolate%20and%20exotic%20fruits%2C%20professional%20food%20photography&width=600&height=400&seq=special6&orientation=landscape" alt="Gold Leaf Dessert" class="w-full h-full object-cover transition-transform duration-500">
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-xl font-bold">Gold Leaf Dessert</h3>
+<span class="text-primary font-medium">?35</span>
+</div>
+<p class="text-gray-400 mb-4">Decadent chocolate creation adorned with 24k gold leaf.</p>
+<button class="add-to-cart-btn w-full" data-id="food30" data-name="Gold Leaf Dessert" data-price="35" data-image="https://readdy.ai/api/search-image?query=gold%20leaf%20dessert%20with%20chocolate%20and%20exotic%20fruits%2C%20professional%20food%20photography&width=600&height=400&seq=special6&orientation=landscape">
+Add to Cart
+</button>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</section>
+</main>
+
+<footer class="bg-gray-950 py-12">
+<div class="container mx-auto px-4">
+<div class="text-center">
+<div class="logo text-3xl text-white font-bold mb-4">Pokyto's</div>
+<p class="text-gray-400 mb-6">Experience Culinary Excellence & Artistry</p>
+<div class="flex justify-center space-x-6 mb-8">
+<a href="#" class="text-gray-400 hover:text-primary transition-colors">
+<i class="ri-facebook-line ri-xl"></i>
+</a>
+<a href="#" class="text-gray-400 hover:text-primary transition-colors">
+<i class="ri-instagram-line ri-xl"></i>
+</a>
+<a href="#" class="text-gray-400 hover:text-primary transition-colors">
+<i class="ri-twitter-line ri-xl"></i>
+</a>
+<a href="#" class="text-gray-400 hover:text-primary transition-colors">
+<i class="ri-youtube-line ri-xl"></i>
+</a>
+</div>
+<div class="border-t border-gray-800 pt-8">
+<p class="text-gray-500">&copy; 2024 Pokyto's Restaurant. All rights reserved.</p>
+</div>
+</div>
+</div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+// Category filtering
+document.addEventListener('DOMContentLoaded', function() {
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const menuItems = document.querySelectorAll('.menu-item-enhanced');
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const category = this.getAttribute('data-category');
+            
+            // Update active tab
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Filter menu items
+            menuItems.forEach(item => {
+                if (category === 'all' || item.getAttribute('data-category') === category) {
+                    item.style.display = 'block';
+                    item.classList.add('fade-in-up');
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    });
+});
+</script>
+<script src="js/main.js"></script>
+</body>
+</html>
